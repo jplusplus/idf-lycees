@@ -65,3 +65,4 @@ $.fn.loading = function(state, addClass) {
     return this;
 
 };
+

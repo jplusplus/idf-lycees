@@ -44,7 +44,12 @@ var express        = require('express')
  * Authentification module  
  * @type {Object}
  */
-, passport       = require("passport");
+, passport       = require("passport")
+/**
+ * Underscore librairie
+ * @type {Object}
+ */
+, _ = require("underscore");
 
 
 /**
@@ -159,6 +164,8 @@ exports.boot = function(){
     app.use(function(req, res, next) {
       // Current user
       res.locals.user = req.user || false;
+      // Register underscore
+      res.locals._ = _;
 
       next();
     });

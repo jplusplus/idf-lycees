@@ -1,0 +1,23 @@
+.header
+  button(type="button").btn.back.pull-right Retour
+  h2 Fichre lycée
+
+.content
+  h3=lycee.nom
+  .uai="N° UAI : "+lycee.uai
+  if lycee["presence-dinternat"]
+    .internat="Présence internat : " + lycee["presence-dinternat"]
+
+  if lycee["le-de-la-region"]
+    h3 Le + région pour ce lycée
+    =lycee["le-de-la-region"]
+
+  h3 Filières
+  ul
+    each filiere in lycee.filieres
+      if filiere["sous-filiere-ppi"] == ""
+        li=filiere["filiere-ppi"]
+          //ul
+            each sousFiliere in lycee.filieres
+              if sousFiliere["filiere-ppi"] == filiere["filiere-ppi"]
+                li=sousFiliere["sous-filiere-ppi"]
