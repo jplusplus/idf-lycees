@@ -1,0 +1,82 @@
+extends layout
+
+block title
+  = "Les lycées dans votre région"
+  
+block stylesheets
+  link(href="/stylesheets/vendor/bootstrap/css/bootstrap.min.css", type='text/css', rel="stylesheet")
+  link(href="/stylesheets/style.css", type='text/css', rel="stylesheet")
+
+block scripts
+  script(src="//maps.googleapis.com/maps/api/js?sensor=true", type="text/javascript")
+  script(src="//www.google.com/jsapi", type="text/javascript")
+  script(type="text/javascript")    
+    google.load('visualization', '1');
+  script(src="/javascripts/vendor/bootstrap.min.js", type="text/javascript")
+  script(src="/javascripts/vendor/jquery.scrollTo-min.js", type="text/javascript")
+  script(src="/javascripts/global.js", type="text/javascript")
+
+
+block body
+  #menu
+    .wrapper
+      .card
+        fieldset
+          legend Rechercher un lycée par son nom
+          form.inputs.form-search#lyceeFilter
+            label
+              | Vous connaissez déjà le nom du lycée que vous cherchez ?<br />
+              | Entrez-le pour localiser l'établissement sur la carte.            
+            .input-append   
+              input(type="text", name="lycee", placeholder="Ex : Albert Triboulet").input-medium.search-query
+              button(type="submit").btn Chercher
+            
+        
+        fieldset.hidden
+          legend Trouver les lycées près de chez moi      
+          form.inputs.form-search#placeFilter
+            label
+              | Entrez votre adresse pour trouver les établissements près de chez vous           
+            .input-append   
+              input(type="text", name="place", placeholder="Ex : 21, rue des Vertues").input-medium.search-query
+              button(type="submit").btn Chercher
+
+        fieldset.hidden
+          legend Trouver une filière#filiereFilter
+          form.inputs
+            p Utiliser les critères ci-dessous pour afﬁcher les établissements qui vous intéressent
+            .row-fluid 
+              label
+                .span3 Niveau
+                select(name="level").span8
+                  option(value="pré")  Pré-bac
+                  option(value="post") Post-bac
+              .span1.pull-right X
+            .row-fluid 
+              label
+                .span3 Type de formation
+                select(name="type").span8
+                  option(value="scolaire")  Scolaire
+                  option(value="apprentissage") Apprentissage
+              .span1.pull-right X
+            .row-fluid 
+              label
+                .span3 Filière
+                select(name="filiere").span8
+                  each filiere in filieres
+                    if filiere["sous-filiere-ppi"] == ""
+                      option(value="")=filiere.uai
+              .span1.pull-right X
+            .row-fluid 
+              label
+                .span3 Sous filière
+                select(name="sous-filiere").span8
+                  each filiere in filieres
+                    if filiere["sous-filiere-ppi"] != ""
+                     option(value="")=filiere.uai
+              .span1.pull-right X
+      .card
+        | coucou
+
+
+  #map Silence is golden.

@@ -1,0 +1,21 @@
+{
+  "dependencies": {
+      "async"             : "latest"
+    , "config"            : "latest"
+    , "express"           : "3.0.0rc2"
+    , "fuzzy"             : "latest"  
+    , "jade"              : "latest"
+    , "less-middleware"   : "latest"
+    , "memjs"             : "latest"
+    , "passport"          : "latest"
+    , "underscore"        : "latest"  
+  }
+  , "engines": {
+      "node": "0.8.7",
+      "npm": "1.1.32"
+  }
+  , "main": "app.js"
+  , "name": "idf-lycees"
+  , "private": true
+  , "version": "0.0.1"
+}

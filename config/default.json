@@ -1,0 +1,16 @@
+{
+	"port": 3000,
+	"host": "http://localhost",
+	"db": {
+	  "uri": "postgres://pirhoo:pirhoo@localhost:5432/idf-lycees"	  
+	},
+	"salts": {
+		"cookies" : "L7mdcS4k5JzIepqwTaVdTGp4uZi4iIYF0ht2bkET"
+	},
+  "memcached": {
+    "servers"  : "mc2.ec2.memcachier.com:11211",
+    "username" : "55d0f4",
+    "password" : "7bc199029d6bc5ebfce9",
+    "expires"  : 3600
+  }
+}
