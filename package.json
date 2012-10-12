@@ -4,6 +4,7 @@
     , "config"            : "latest"
     , "express"           : "3.0.0rc2"
     , "fuzzy"             : "latest"  
+    , "googlapis"         : "latest"  
     , "jade"              : "latest"
     , "less-middleware"   : "latest"
     , "memjs"             : "latest"
