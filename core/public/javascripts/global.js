@@ -9,6 +9,7 @@ new (function(window, undefined) {
    */
   that.lyceeFilter = function(event) {
     event.preventDefault();
+    if(event.type == "submit") return;
 
     var filter = that.el.$lyceeFilter.find("[name=lycee]").val();
     if(filter != "") {
@@ -257,7 +258,7 @@ new (function(window, undefined) {
     });
 
     // Submit filter forms
-    that.el.$lyceeFilter.on("submit", that.lyceeFilter);
+    that.el.$lyceeFilter.on("change submit", that.lyceeFilter);
     that.el.$placeFilter.on("submit", that.placeFilter);
     that.el.$filiereFilter.on("change", that.filiereFilter);
     that.el.$filiereFilter.on("click", ".reset", that.resetFilter);
@@ -267,6 +268,41 @@ new (function(window, undefined) {
     $('body').bind("touchmove", {}, function(event){
       event.preventDefault();
     });
+
+    // Get all lycées to setup the autocomplete
+    $.getJSON("/lycees.json", function(data) {
+
+      // Puts every lycee in an array of string
+      for(var index in data) {
+        data[index].slug = slugify(data[index].nom);
+      }
+
+      that.lyceesList = data;
+      
+      // Setup the autocomplete with the array of string as data source
+      that.el.$lyceeFilter.find(":input[name=lycee]").typeahead({
+        // The data source to use
+        source: function(txt, callback) {
+          // Slugify the search
+          txt = slugify(txt);
+          // Fuzzy search with the slug on the lycee list
+          var res = $(that.lyceesList).map(function(i,lycee){ 
+            // In case of match, returns the lycee's name
+            if(lycee.slug.toLowerCase().indexOf(txt.toLowerCase())!=-1){ return lycee.nom } 
+          }).get();
+          // Return the data source filtered
+          callback(res);
+        },
+        // Accepts every data (already filtered by the source function)
+        matcher: function() { return true },
+        // Disable hiligth
+        highlighter: function(item) { return item }
+      });
+
+    });
+
+    
+
   };
 
   
