@@ -92,3 +92,15 @@ function slugify(str) {
 
   return str;
 }
+
+function distinct(collection, map) {
+  return _.map(
+          _.groupBy(
+            collection,
+            map
+          ),
+          function(grouped){
+            return grouped[0];
+          }
+        );
+};

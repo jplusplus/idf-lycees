@@ -35,17 +35,15 @@ module.exports = function(app) {
       // Record the client
       client = c;
       // Sets API key
-      client.setApiKey('AIzaSyBstMlh1qxkkJoFJ_-7sJh5H6lGG3t-w3o');            
+      client.setApiKey('AIzaSyALQzqhaM30UDeVoDQ8ZBAW2LAqVtNQKl8');            
 
       // Get the two dataset
       async.parallel(
         {
-          lycees: getLycees, 
-          filieres: getFilieres
+          lycees: getLycees
         // Save the dataset as exportable values
         }, function(err, res) {          
-          module.exports.filieres = res.filieres;
-          module.exports.lycees   = res.lycees;
+          module.exports.lycees  = res.lycees;          
         }
       );
     }
@@ -58,15 +56,7 @@ module.exports = function(app) {
  * @param  {Function} callback Callback function 
  */
 var getLycees = module.exports.getLycees = function(callback) {
-  getTable("1ljq-Vv1v3n903P29q4gR6VvmHSljiT-78Bz72W0", callback);
-};
-
-/**
- * Get the filières dataset
- * @param  {Function} callback Callback function 
- */
-var getFilieres = module.exports.getFilieres = function(callback) {
-  getTable("1CCsbIRHaNNlxZ1UFqESl-zW9wlbS8IbP_IqfHGQ", callback);
+  getTable("1tKbe33RbVG_gkB-FHlkVWPPtE6HQLAmOkYLwXMM", callback);
 };
 
 
@@ -86,11 +76,11 @@ var getTable = module.exports.getTable = function(key, callback) {
   // Creates a batch request
   client
     .newBatchRequest()
-    .add('fusiontables.query.sql', { sql: 'SELECT * FROM ' + escape(key)})
-    .execute(null,function(err, res, headers) {
-
+    .add('fusiontables.query.sql', { sql: "SELECT * FROM " + escape(key) + " WHERE 'Code Nature UAI' NOT EQUAL TO '' "})
+    .execute(null, function(err, res, headers) {
+ 
       // Spread the error
-      if(res == null) return callback(err, null);
+      if(res == null || !res.length || res[0] == null) return callback(err, null);
 
       // For each rows in the given dataset
       for(var index in res[0].rows) {

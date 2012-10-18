@@ -10,10 +10,11 @@ block stylesheets
 block scripts
   script(src="//maps.googleapis.com/maps/api/js?sensor=true", type="text/javascript")
   script(src="//www.google.com/jsapi", type="text/javascript")
-  script(type="text/javascript")    
-    google.load('visualization', '1');
+  script(src="/javascripts/vendor/infobox.js", type="text/javascript")
   script(src="/javascripts/vendor/bootstrap.min.js", type="text/javascript")
+  script(src="/javascripts/vendor/underscore-min.js", type="text/javascript")
   script(src="/javascripts/vendor/jquery.scrollTo-min.js", type="text/javascript")
+  script(src="/javascripts/vendor/jquery.idle-timer.js", type="text/javascript")    
   script(src="/javascripts/vendor/jade.min.js", type="text/javascript")
   script(src="/javascripts/functions.utils.js", type="text/javascript")
   script(src="/javascripts/global.js", type="text/javascript")
@@ -22,7 +23,7 @@ block body
   #menu
     .wrapper
       .card
-        fieldset.hidden
+        fieldset
           legend Rechercher un lycée par son nom
           form.inputs.form-search#lyceeFilter
             label
@@ -42,27 +43,31 @@ block body
               input(type="text", name="place", placeholder="Ex : 21, rue des Vertues").input-medium.search-query
               button(type="submit").btn Chercher
 
-        fieldset
+        fieldset.hidden
           legend Trouver une filière
           form.inputs#filiereFilter
             p Utiliser les critères ci-dessous pour afﬁcher les établissements qui vous intéressent
+            .row-fluid
+              label.checkbox.span12
+                input(type="checkbox", name="internat")
+                | Avec internat           
             .row-fluid 
               label
                 .span3 Niveau
                 select(name="level").span8
                   option(value="")  --
-                  option(value="pré")  Pré-bac
-                  option(value="post") Post-bac
-              .span1.pull-right.reset X
+                  option(value="Pré-Bac")  Pré-bac
+                  option(value="Post-Bac") Post-bac
+              .span1.pull-right.reset.hide X
 
-            .row-fluid.hide
+            //.row-fluid.hide
               label
                 .span3 Type de formation
                 select(name="type",disabled=true).span8
                   option(value="")  --
                   option(value="scolaire")  Scolaire
                   option(value="apprentissage") Apprentissage
-              .span1.pull-right.reset X
+              .span1.pull-right.reset.hide X
 
             .row-fluid.hide
               label
@@ -71,7 +76,7 @@ block body
                   option(value="")  --
                   each filiere in filieres
                       option(value=filiere["filiere-ppi"])=filiere["filiere-ppi"]
-              .span1.pull-right.reset X
+              .span1.pull-right.reset.hide X
 
             .row-fluid.hide
               label
@@ -80,7 +85,7 @@ block body
                   option(value="")  --
                   each sousFiliere in sousFilieres
                     option(value=sousFiliere["sous-filiere-ppi"], data-filiere=sousFiliere["filiere-ppi"])=sousFiliere["sous-filiere-ppi"]
-              .span1.pull-right.reset X
+              .span1.pull-right.reset.hide X
       .card
         .lycee
 
