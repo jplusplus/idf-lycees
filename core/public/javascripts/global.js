@@ -521,8 +521,8 @@ new (function(window, undefined) {
     that.el.$lyceeFilter.on("change submit", that.lyceeFilter);
     that.el.$placeFilter.on("submit", that.placeFilter);
     that.el.$filiereFilter.on("change", that.filiereFilter);
-    that.el.$filiereFilter.on("click", ".reset", that.resetFilter);
-    that.el.$menu.on("click", ".back", function() { that.goToCard(0) });
+    that.el.$filiereFilter.on("click touchend", ".reset", that.resetFilter);
+    that.el.$menu.on("click touchend", ".back", function() { that.goToCard(0) });
     that.el.$map.on("click touchend", ".btn", that.openLycee);
 
     // No scroll, anywhere
