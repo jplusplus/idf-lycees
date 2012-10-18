@@ -8,7 +8,9 @@ new (function(window, undefined) {
   that.showStatut = false;
 
   that.askForReset = that.reset = function() {
-    if( confirm("Recommencer la visite ?") ) {
+    if( confirm("Recommencer la visite ?") ) {      
+      // Close the existing infowindow
+      if(that.infobox) that.infobox.close();
       // Empty all inputs and trigger a change event (to reset some form's)
       $(":input").val("").trigger("change");
       // Show all markers
@@ -276,6 +278,9 @@ new (function(window, undefined) {
   that.initMarkerLayer = function(fitBound, where, callback) {
 
     callback = callback || function() {};
+    
+    // Close the existing infowindow
+    if(that.infobox) that.infobox.close();
 
     // Ajust the zoom by default
     fitBound = typeof fitBound == "undefined" ? true : fitBound;
