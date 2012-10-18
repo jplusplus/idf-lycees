@@ -371,7 +371,7 @@ new (function(window, undefined) {
     var marker = this;
     // Content of the info box
     var infoboxContent = [];
-    infoboxContent.push("<div class='row-fluid'>");  
+    infoboxContent.push("<div class='row-fluid' data-uai='" +  marker.lycee.uai +"'>");  
       infoboxContent.push("<div class='span10'>");  
         infoboxContent.push("<h4>");
           infoboxContent.push(marker.lycee.name);
@@ -411,11 +411,15 @@ new (function(window, undefined) {
   that.openLycee = function(event) {
 
     event.stopPropagation();
-    var marker = $(this).parents(".js-info-box");
-    console.log(marker);
-    return;
+
+    // Found the uai in the parent element that contains it
+    var uai = $(this).parents("[data-uai]").data("uai");
+
+    // Closes the marker info box
+    that.infobox.close();
+    
     // Load the lycee
-    $.getJSON("/lycees/" + marker.lycee.uai + ".json", function(data) {
+    $.getJSON("/lycees/" + uai + ".json", function(data) {
       // Compile the template with the lycee
       var html = that.templates.lycee({ lycee: data });
       // Populate the second card with the lycee
@@ -423,6 +427,7 @@ new (function(window, undefined) {
       // Scroll to the lycee's fiche
       that.goToCard(1);
     });
+
   }
 
   that.changeMarkerIcon = function(marker) {
@@ -518,7 +523,7 @@ new (function(window, undefined) {
     that.el.$filiereFilter.on("change", that.filiereFilter);
     that.el.$filiereFilter.on("click", ".reset", that.resetFilter);
     that.el.$menu.on("click", ".back", function() { that.goToCard(0) });
-    that.el.$map.on("click", ".btn", that.openLycee);
+    that.el.$map.on("click touchend", ".btn", that.openLycee);
 
     // No scroll, anywhere
     $('body').bind("touchmove", {}, function(event){
