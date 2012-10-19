@@ -4,9 +4,9 @@ mixin statutLabel(statut)
   else
     .label.pull-right.label-warning=statut
 
-mixin filiereTree(filieres)
+mixin filiereTree(filieres, legend)
   fieldset.hidden
-    legend Pré-Bac
+    legend=legend
     .inputs
       ul
         each filiere, key in filieres
@@ -40,7 +40,7 @@ mixin filiereTree(filieres)
 
   h3 Filières
   if lycee.filieres["Pré-Bac"]
-    mixin filiereTree(lycee.filieres["Pré-Bac"])
+    mixin filiereTree(lycee.filieres["Pré-Bac"],"Pré-Bac")
 
   if lycee.filieres["Post-Bac"]
-    mixin filiereTree(lycee.filieres["Post-Bac"])
+    mixin filiereTree(lycee.filieres["Post-Bac"],"Post-Bac")

@@ -47,10 +47,6 @@ block body
           legend Trouver une filière
           form.inputs#filiereFilter
             p Utiliser les critères ci-dessous pour afﬁcher les établissements qui vous intéressent
-            .row-fluid
-              label.checkbox.span12
-                input(type="checkbox", name="internat")
-                | Avec internat           
             .row-fluid 
               label
                 .span3 Niveau
@@ -58,15 +54,6 @@ block body
                   option(value="")  --
                   option(value="Pré-Bac")  Pré-bac
                   option(value="Post-Bac") Post-bac
-              .span1.pull-right.reset.hide X
-
-            //.row-fluid.hide
-              label
-                .span3 Type de formation
-                select(name="type",disabled=true).span8
-                  option(value="")  --
-                  option(value="scolaire")  Scolaire
-                  option(value="apprentissage") Apprentissage
               .span1.pull-right.reset.hide X
 
             .row-fluid.hide
@@ -86,6 +73,12 @@ block body
                   each sousFiliere in sousFilieres
                     option(value=sousFiliere["sous-filiere-ppi"], data-filiere=sousFiliere["filiere-ppi"])=sousFiliere["sous-filiere-ppi"]
               .span1.pull-right.reset.hide X
+
+        .internat
+          label.checkbox.span12
+            input(type="checkbox", name="hasInternat")
+            | Avec internat
+
       .card
         .lycee
 

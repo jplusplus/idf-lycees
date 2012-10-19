@@ -10,7 +10,7 @@ new (function(window, undefined) {
   that.askForReset = that.reset = function() {
     if( confirm("Recommencer la visite ?") ) {      
       // Close the existing infowindow
-      if(that.infobox) that.infobox.close();
+      that.closeInfobox();
       // Empty all inputs and trigger a change event (to reset some form's)
       $(":input").val("").trigger("change");
       // Show all markers
@@ -49,8 +49,6 @@ new (function(window, undefined) {
    */
   that.placeFilter = function(event) {
     event.preventDefault();
-    // Show all markers
-    if(!that.allMarkers) that.initMarkerLayer(false);
 
     // Gets the adresse
     var address = that.el.$placeFilter.find("[name=place]").val();
@@ -59,9 +57,12 @@ new (function(window, undefined) {
       // If the geocoding succeed
       if (statut == google.maps.GeocoderStatus.OK) {
         // Looks for the points 5 km arround the center
-        var where = "ST_INTERSECTS(LATLNG(Geo), CIRCLE( LATLNG" + results[0].geometry.location.toString() + ", 5000) )";
+        var where = "ST_INTERSECTS(Geo, CIRCLE( LATLNG" + results[0].geometry.location.toString() + ", 5000) )";
         that.getPoints(where, function(err, points) {
           points = points || [];
+          if(points.length == 0) return alert('Aucun résultat trouvé');
+          // Show all markers
+          if(!that.allMarkers) that.initMarkerLayer(false);
           // Centers and zoom the maps
           that.map.setCenter(results[0].geometry.location);
           // Adapts the zoom following the number of points
@@ -147,10 +148,6 @@ new (function(window, undefined) {
 
       switch(field) {  
 
-        case "internat":
-          var addWhere = " 'Présence internat' = 'oui' ";
-          break;
-        
         case "level":
           var addWhere = " 'Niveau' = '" + value + "' ";
           break;
@@ -222,7 +219,13 @@ new (function(window, undefined) {
       center    : new google.maps.LatLng(48.850258, 2.647705),
       zoom      : 10,
       mapTypeId : google.maps.MapTypeId.ROADMAP,
-      styles    : mapStyle
+      //styles    : mapStyle,
+      panControl: true,
+      zoomControl: true,
+      mapTypeControl: false,
+      scaleControl: true,
+      streetViewControl: false,
+      overviewMapControl: false
     };
 
     // Creates the Map in the #map container with the above options
@@ -231,6 +234,10 @@ new (function(window, undefined) {
     that.geocoder = new google.maps.Geocoder();
     // Add every markers on the map
     that.initMarkerLayer(true);
+    
+    // Close the infobox when we click on the map
+    // google.maps.event.addListener(that.map, 'click', that.closeInfobox);
+
   };
 
 
@@ -241,7 +248,7 @@ new (function(window, undefined) {
     where = where || "";
     // Create the request to get all Lycées
     var query = [];
-    query.push("SELECT Geo, UAI, Statut, NOM, ADRESSE");
+    query.push("SELECT Geo, UAI, Statut, NOM, ADRESSE, 'Présence internat'");
     query.push("FROM " + tableMerged);
     // Avoid bad entries
     query.push("WHERE 'Code Nature UAI' NOT EQUAL TO ''");
@@ -281,7 +288,7 @@ new (function(window, undefined) {
     callback = callback || function() {};
     
     // Close the existing infowindow
-    if(that.infobox) that.infobox.close();
+    that.closeInfobox();
 
     // Ajust the zoom by default
     fitBound = typeof fitBound == "undefined" ? true : fitBound;
@@ -301,7 +308,7 @@ new (function(window, undefined) {
       var pts = [];
 
       // Fetch every line 
-      for(var i in points) {   
+      for(var i in points) {         
 
         // Embedable data for the marker
         var lycee = {
@@ -310,6 +317,7 @@ new (function(window, undefined) {
             statut : points[i][2],            // The statut of the lycee (Scolaire or Apprentissage)
               name : points[i][3],            // The name of the lycee
               addr : points[i][4],            // The address of the lycee
+          internat : points[i][5] == "oui",            // Is there an internat ?
           filieres : [ points[i][2] ]         // An array of the differents filieres statut
         };
 
@@ -343,7 +351,9 @@ new (function(window, undefined) {
     var marker = new google.maps.Marker({
       map      : that.map,
       icon     : that.getMarkerIcon(lycee.statut),
-      position : new google.maps.LatLng(lycee.geo[0], lycee.geo[1])
+      position : new google.maps.LatLng(lycee.geo[0], lycee.geo[1]),
+      visible  : that.isLyceeVisible(lycee),
+      zIndex   : -1
     });
 
     // Saves some data into a lycee attribut
@@ -358,6 +368,10 @@ new (function(window, undefined) {
     return marker;
   };
 
+  that.isLyceeVisible = function(lycee) {
+    return ! that.el.$hasInternat.is(":checked") || lycee.internat;
+  };
+
   that.clearMarkers = function() { 
     
     if(typeof that.markers == "undefined") return that.markers = {};
@@ -368,61 +382,83 @@ new (function(window, undefined) {
     that.markers = {};
   };
 
+  that.updateMarkersVisibility = function() {
+    for( var key in that.markers ){           
+      that.markers[key].setVisible( that.isLyceeVisible(that.markers[key].lycee) );
+    }
+  };
+
   /**
    * Event fired by a click on a marker (create an info box)
    * @src http://google-maps-utility-library-v3.googlecode.com/svn/tags/infobox/1.1.9/docs/reference.html
    */
-  that.markerClick = function() {
+  that.markerClick = function(event) {    
 
     var marker = this;
-    // Content of the info box
-    var infoboxContent = [];
-    infoboxContent.push("<div class='row-fluid' data-uai='" +  marker.lycee.uai +"'>");  
-      infoboxContent.push("<div class='span10'>");  
-        infoboxContent.push("<h4>");
-          infoboxContent.push(marker.lycee.name);
-        infoboxContent.push("</h4>");        
-        infoboxContent.push("<p>");
-          infoboxContent.push(marker.lycee.addr);
-        infoboxContent.push("</p>");
-      infoboxContent.push("</div>");
-      infoboxContent.push("<div class='span2'>"); 
-         infoboxContent.push("<a class='btn btn-inverse btn-mini btn-block'>info</a>");
-      infoboxContent.push("</div>");
-    infoboxContent.push("</div>");
 
-    var options = {
-        content: infoboxContent.join(""),
-        disableAutoPan: false,
-        enableEventPropagation: true,
-        maxWidth: 0,
-        alignBottom: true,
-        pixelOffset: new google.maps.Size(0, -20),
-        zIndex: null,
-        boxClass: "js-info-box",
-        closeBoxURL: "",
-        position: marker.position
-    };
+    // Set a timeout to the infobox opening
+    setTimeout(function() {
+      // Avoid useless closing and infobox opening (cf that.openLycee)
+      if(that.doNotCloseInfoBox) return false;
 
-    // Close the existing infowindow
-    if(that.infobox) that.infobox.close();
-    // Create a new infobox with the options bellow
-    that.infobox = new InfoBox(options);
-    // Open the infobox related to the marker map
-    that.infobox.open(marker.map);
+      // Content of the info box
+      var infoboxContent = [];
+      infoboxContent.push("<div class='row-fluid' data-uai='" +  marker.lycee.uai +"'>");  
+        infoboxContent.push("<div class='span10'>");  
+          infoboxContent.push("<h4>");
+            infoboxContent.push(marker.lycee.name);
+          infoboxContent.push("</h4>");        
+          infoboxContent.push("<p>");
+            infoboxContent.push(marker.lycee.addr);
+          infoboxContent.push("</p>");
+        infoboxContent.push("</div>");
+        infoboxContent.push("<div class='span2'>"); 
+           infoboxContent.push("<a class='btn btn-inverse btn-mini btn-block'>info</a>");
+        infoboxContent.push("</div>");
+      infoboxContent.push("</div>");
+
+      var options = {
+          content: infoboxContent.join(""),
+          enableEventPropagation: true,
+          maxWidth: 0,
+          alignBottom: true,
+          pixelOffset: new google.maps.Size(0, -20),
+          zIndex: null,
+          boxClass: "js-info-box",
+          closeBoxURL: "",
+          position: marker.position,
+          pane: "floatPane" 
+      };
+
+      // Close the existing infowindow
+      that.closeInfobox();
+      // Create a new infobox with the options bellow
+      that.infobox = new InfoBox(options);
+      // Open the infobox related to the marker map
+      that.infobox.open(marker.map);
+
+    }, 200);
 
   };
 
 
   that.openLycee = function(event) {
 
-    event.stopPropagation();
+    event.cancelBubble = true;
+    if (event.stopPropagation) {
+      event.stopPropagation();
+    } 
+
+    // Record the click to avoid useless closing
+    that.doNotCloseInfoBox = true;
+    setTimeout(function() { that.doNotCloseInfoBox = false;  }, 200);
 
     // Found the uai in the parent element that contains it
     var uai = $(this).parents("[data-uai]").data("uai");
 
-    // Closes the marker info box
-    that.infobox.close();
+    // Toggle the infobox state
+    var $infobox = $(that.infobox.div_);
+    $infobox.addClass("js-open").css("max-height", $infobox.find("h4").height() );
     
     // Load the lycee
     $.getJSON("/lycees/" + uai + ".json", function(data) {
@@ -434,6 +470,7 @@ new (function(window, undefined) {
       that.goToCard(1);
     });
 
+    return false;
   }
 
   that.changeMarkerIcon = function(marker) {
@@ -482,6 +519,10 @@ new (function(window, undefined) {
 
   };
 
+  that.closeInfobox = function(event) {
+    if(that.infobox) that.infobox.close();
+  };
+
   that.adjustMapZoom = function() {       
 
     var bounds = new google.maps.LatLngBounds();
@@ -504,7 +545,8 @@ new (function(window, undefined) {
       $menu           : $("#menu"),
       $lyceeFilter    : $("#lyceeFilter"),
       $placeFilter    : $("#placeFilter"),
-      $filiereFilter  : $("#filiereFilter")
+      $filiereFilter  : $("#filiereFilter"),
+      $hasInternat    : $(":input[name=hasInternat]")
     };
   };  
 
@@ -529,12 +571,8 @@ new (function(window, undefined) {
     that.el.$filiereFilter.on("change", that.filiereFilter);
     that.el.$filiereFilter.on("click touchend", ".reset", that.resetFilter);
     that.el.$menu.on("click touchend", ".back", function() { that.goToCard(0) });
-    that.el.$map.on("click touchend", ".btn", that.openLycee);
-
-    // No scroll, anywhere
-    $('body').bind("touchmove", {}, function(event){
-      event.preventDefault();
-    });
+    that.el.$map.on("click touchend", ".js-info-box .btn", that.openLycee);
+    that.el.$hasInternat.on("change", that.updateMarkersVisibility);
 
     // Get all lycées to setup the autocomplete
     $.getJSON("/lycees.json", function(data) {
@@ -579,33 +617,6 @@ new (function(window, undefined) {
     that.initEvents();  
     that.initTemplates();  
     that.initMaps();
-
-
-
-    /**
-
-    // Create the request to get all Lycées
-    var queryText = [];
-    queryText.push('SELECT COUNT(), UAI');
-    queryText.push("FROM " + tableMerged );
-    queryText.push("GROUP BY UAI, 'Filière PPI', Niveau");
-
-    console.log( queryText.join("\n") );
-
-    // Create URL
-    var url = 'https://www.googleapis.com/fusiontables/v1/query?callback=?',
-    params  = {
-      sql      : queryText.join(" "),
-      key      : "AIzaSyAm9yWCV7JPCTHCJut8whOjARd7pwROFDQ"
-    };
-
-    // Get the data
-    $.getJSON(url, params, function(response, statut) {
-      for(var i in response.rows) {
-         console.log( response.rows[i][0], response.rows[i][1] )
-      }
-    }); */
-     
 
   });
 
