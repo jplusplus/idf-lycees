@@ -1,6 +1,18 @@
 @import "vendor/bootstrap/less/variables.less";
 @import "vendor/bootstrap/less/mixins.less";
 
+
+@font-face {
+    font-family: 'Gill';
+    src: url('./fonts/GillSansMTPro-Medium.eot');
+    src: url('./fonts/GillSansMTPro-Medium.eot?#iefix') format('embedded-opentype'),
+         url('./fonts/GillSansMTPro-Medium.woff') format('woff'),
+         url('./fonts/GillSansMTPro-Medium.ttf') format('truetype'),
+         url('./fonts/GillSansMTPro-Medium.svg#gillsansmtpro-medium') format('svg');
+    font-weight: normal;
+    font-style: normal;
+}
+
 .animation(@animation) {
   -webkit-animation: @animation;
      -moz-animation: @animation;

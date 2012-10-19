@@ -59,7 +59,7 @@ new (function(window, undefined) {
       // If the geocoding succeed
       if (statut == google.maps.GeocoderStatus.OK) {
         // Looks for the points 5 km arround the center
-        var where = "ST_INTERSECTS(Geo, CIRCLE( LATLNG" + results[0].geometry.location.toString() + ", 5000) )";
+        var where = "ST_INTERSECTS(LATLNG(Geo), CIRCLE( LATLNG" + results[0].geometry.location.toString() + ", 5000) )";
         that.getPoints(where, function(err, points) {
           points = points || [];
           // Centers and zoom the maps
@@ -241,11 +241,12 @@ new (function(window, undefined) {
     where = where || "";
     // Create the request to get all Lycées
     var query = [];
-    query.push("SELECT Geocode(Geo), UAI, Statut, NOM, ADRESSE");
+    query.push("SELECT Geo, UAI, Statut, NOM, ADRESSE");
     query.push("FROM " + tableMerged);
     // Avoid bad entries
     query.push("WHERE 'Code Nature UAI' NOT EQUAL TO ''");
-    query.push("AND UAI NOT EQUAL TO '0931827F'");
+    // query.push("AND UAI NOT EQUAL TO '0931827F'");
+    
     // Conditional WHERE clause
     if(where != "") {
       query.push("AND " + where);

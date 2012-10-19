@@ -3,6 +3,10 @@
 @menuWidth:350px;
 @cardCount:2;
 
+h1, h2, h3, h4, h5, h6, legend {
+  font-family:"Gill", "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
 #map {
   position:absolute;
   top:0;
@@ -16,10 +20,11 @@
   z-index:10;
 
   .js-info-box {
+    position:relative;
     background:white;
     padding:5px;
     width:200px;
-    margin-left:-105px;
+    margin-left:-110px;
     .border-radius(5px);
     .box-shadow(0 2px 8px 0 rgba(0,0,0,0.5) );
 
@@ -34,6 +39,21 @@
       padding:0;
       margin:0;
     }
+
+    &:after {
+      content:"";
+      position:absolute;
+      bottom:-7px;
+      left:50%;
+      margin-left:-7px;
+      background:white;
+      width:14px;
+      height:14px;
+      z-index:10;
+      .rotate(45deg);
+      .box-shadow(4px 4px 4px 0  rgba(0,0,0,0.5) );
+    }
+
   }
 }
 
