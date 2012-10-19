@@ -1,3 +1,9 @@
+mixin statutLabel(statut)
+  if statut == "Scolaire"
+    .label.pull-right.label-info=statut
+  else
+    .label.pull-right.label-warning=statut
+
 mixin filiereTree(filieres)
   fieldset
     legend Pré-Bac
@@ -5,7 +11,7 @@ mixin filiereTree(filieres)
       each filiere, key in filieres
         if filiere.length == 1
           li
-            .label.pull-right=filiere[0].statut
+            mixin statutLabel(filiere[0].statut)
             =key
         else
           li
@@ -13,7 +19,7 @@ mixin filiereTree(filieres)
             ul
               each sousfiliere, key in filiere
                 li
-                  .label.pull-right=sousfiliere.statut
+                  mixin statutLabel(sousfiliere.statut)
                   =sousfiliere["sous-filiere-ppi"]
 
 
