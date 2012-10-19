@@ -5,22 +5,23 @@ mixin statutLabel(statut)
     .label.pull-right.label-warning=statut
 
 mixin filiereTree(filieres)
-  fieldset
+  fieldset.hidden
     legend Pré-Bac
-    ul
-      each filiere, key in filieres
-        if filiere.length == 1
-          li
-            mixin statutLabel(filiere[0].statut)
-            =key
-        else
-          li
-            =key
-            ul
-              each sousfiliere, key in filiere
-                li
-                  mixin statutLabel(sousfiliere.statut)
-                  =sousfiliere["sous-filiere-ppi"]
+    .inputs
+      ul
+        each filiere, key in filieres
+          if filiere.length == 1
+            li
+              mixin statutLabel(filiere[0].statut)
+              =key
+          else
+            li
+              =key
+              ul
+                each sousfiliere, key in filiere
+                  li
+                    mixin statutLabel(sousfiliere.statut)
+                    =sousfiliere["sous-filiere-ppi"]
 
 
 .header
