@@ -236,7 +236,7 @@ new (function(window, undefined) {
     that.initMarkerLayer(true);
     
     // Close the infobox when we click on the map
-    // google.maps.event.addListener(that.map, 'click', that.closeInfobox);
+    google.maps.event.addListener(that.map, 'click', that.closeInfobox);
 
   };
 
@@ -396,62 +396,51 @@ new (function(window, undefined) {
 
     var marker = this;
 
-    // Set a timeout to the infobox opening
-    setTimeout(function() {
-      // Avoid useless closing and infobox opening (cf that.openLycee)
-      if(that.doNotCloseInfoBox) return false;
-
-      // Content of the info box
-      var infoboxContent = [];
-      infoboxContent.push("<div class='row-fluid' data-uai='" +  marker.lycee.uai +"'>");  
-        infoboxContent.push("<div class='span10'>");  
-          infoboxContent.push("<h4>");
-            infoboxContent.push(marker.lycee.name);
-          infoboxContent.push("</h4>");        
-          infoboxContent.push("<p>");
-            infoboxContent.push(marker.lycee.addr);
-          infoboxContent.push("</p>");
-        infoboxContent.push("</div>");
-        infoboxContent.push("<div class='span2'>"); 
-           infoboxContent.push("<a class='btn btn-inverse btn-mini btn-block'>info</a>");
-        infoboxContent.push("</div>");
+    // Content of the info box
+    var infoboxContent = [];
+    infoboxContent.push("<div class='row-fluid' id='infobox-lycee' data-uai='" +  marker.lycee.uai +"'>");  
+      infoboxContent.push("<div class='span10'>");  
+        infoboxContent.push("<h4>");
+          infoboxContent.push(marker.lycee.name);
+        infoboxContent.push("</h4>");        
+        infoboxContent.push("<p>");
+          infoboxContent.push(marker.lycee.addr);
+        infoboxContent.push("</p>");
       infoboxContent.push("</div>");
+      infoboxContent.push("<div class='span2'>"); 
+         infoboxContent.push("<a class='btn btn-inverse btn-mini btn-block'>info</a>");
+      infoboxContent.push("</div>");
+    infoboxContent.push("</div>");
 
-      var options = {
-          content: infoboxContent.join(""),
-          enableEventPropagation: true,
-          maxWidth: 0,
-          alignBottom: true,
-          pixelOffset: new google.maps.Size(0, -20),
-          zIndex: null,
-          boxClass: "js-info-box",
-          closeBoxURL: "",
-          position: marker.position,
-          pane: "floatPane" 
-      };
+    var options = {
+        content: infoboxContent.join(""),
+        boxClass: "js-info-box",
+        enableEventPropagation: false,
+        maxWidth: 0,
+        alignBottom: true,
+        pixelOffset: new google.maps.Size(0, -20),
+        zIndex: null,
+        closeBoxURL: "",
+        position: marker.position,
+        pane: "floatPane" 
+    };
 
-      // Close the existing infowindow
-      that.closeInfobox();
-      // Create a new infobox with the options bellow
-      that.infobox = new InfoBox(options);
-      // Open the infobox related to the marker map
-      that.infobox.open(marker.map);
+    // Close the existing infowindow
+    that.closeInfobox();
+    // Create a new infobox with the options bellow
+    that.infobox = new InfoBox(options);
+    // Open the infobox related to the marker map
+    that.infobox.open(marker.map);
 
-    }, 200);
+    // Bing an event on the button when the domready event is fired on it
+    google.maps.event.addListener(that.infobox,'domready',function(){         
+      $("#infobox-lycee .btn").one("click touchend", that.openLycee);
+    });
 
   };
 
 
   that.openLycee = function(event) {
-
-    event.cancelBubble = true;
-    if (event.stopPropagation) {
-      event.stopPropagation();
-    } 
-
-    // Record the click to avoid useless closing
-    that.doNotCloseInfoBox = true;
-    setTimeout(function() { that.doNotCloseInfoBox = false;  }, 200);
 
     // Found the uai in the parent element that contains it
     var uai = $(this).parents("[data-uai]").data("uai");
@@ -519,8 +508,9 @@ new (function(window, undefined) {
 
   };
 
-  that.closeInfobox = function(event) {
-    if(that.infobox) that.infobox.close();
+  that.closeInfobox = function(event) {        
+    // Close existing infobox    
+    if(that.infobox) that.infobox.close();    
   };
 
   that.adjustMapZoom = function() {       
@@ -571,7 +561,6 @@ new (function(window, undefined) {
     that.el.$filiereFilter.on("change", that.filiereFilter);
     that.el.$filiereFilter.on("click touchend", ".reset", that.resetFilter);
     that.el.$menu.on("click touchend", ".back", function() { that.goToCard(0) });
-    that.el.$map.on("click touchend", ".js-info-box .btn", that.openLycee);
     that.el.$hasInternat.on("change", that.updateMarkersVisibility);
 
     // Get all lycées to setup the autocomplete
