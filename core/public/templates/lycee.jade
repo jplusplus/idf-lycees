@@ -1,3 +1,22 @@
+mixin filiereTree(filieres)
+  fieldset
+    legend Pré-Bac
+    ul
+      each filiere, key in filieres
+        if filiere.length == 1
+          li
+            .label.pull-right=filiere[0].statut
+            =key
+        else
+          li
+            =key
+            ul
+              each sousfiliere, key in filiere
+                li
+                  .label.pull-right=sousfiliere.statut
+                  =sousfiliere["sous-filiere-ppi"]
+
+
 .header
   button(type="button").btn.back.pull-right Retour
   h2 Fichre lycée
@@ -13,11 +32,8 @@
     =lycee["le-de-la-region"]
 
   h3 Filières
-  ul
-    each filiere in lycee.filieres
-      if filiere["sous-filiere-ppi"] == ""
-        li=filiere["filiere-ppi"]
-          //ul
-            each sousFiliere in lycee.filieres
-              if sousFiliere["filiere-ppi"] == filiere["filiere-ppi"]
-                li=sousFiliere["sous-filiere-ppi"]
+  if lycee.filieres["Pré-Bac"]
+    mixin filiereTree(lycee.filieres["Pré-Bac"])
+
+  if lycee.filieres["Post-Bac"]
+    mixin filiereTree(lycee.filieres["Post-Bac"])

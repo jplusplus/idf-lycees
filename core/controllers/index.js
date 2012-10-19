@@ -82,7 +82,17 @@ module.exports = function(app) {
 
     if(lycee) {
       lycee.filieres = _.filter(data.lycees, function(d) { return d.uai == lycee.uai });      
-      lycee.sousFilieres = _.filter(data.lycees, function(d) { return d.uai == lycee.uai });           
+      // lycee.sousFilieres = _.filter(data.lycees, function(d) { return d.uai == lycee.uai });           
+      
+      // Group by niveau
+      lycee.filieres = _.groupBy(lycee.filieres, function(d) { return d["niveau"] });
+      // For each niveau...
+      _.each(lycee.filieres, function(niveau, key) {
+        // ...group each niveau by filiere
+        lycee.filieres[key] = _.groupBy(niveau, function(d) { return d["filiere-ppi"] });
+      });
+          
+
       res.json(lycee);
     } else {
       res.json(404, { "error" : "Not found" });
