@@ -5,8 +5,8 @@ mixin statutLabel(statut)
     .label.pull-right.label-warning=statut
 
 mixin filiereTree(filieres, legend)
-  fieldset.hidden
-    legend=legend
+  .filters.hidden
+    h3=legend
     .inputs
       ul
         each filiere, key in filieres
@@ -27,9 +27,10 @@ mixin filiereTree(filieres, legend)
 .header
   button(type="button").btn.back.pull-right Retour
   h2 Fichre lycée
+  p lorem ipsum dolor si amet
 
 .content
-  h3=lycee.nom
+  h4=lycee.nom
   .uai="N° UAI : "+lycee.uai
   if lycee["presence-dinternat"]
     .internat="Présence internat : " + lycee["presence-dinternat"]

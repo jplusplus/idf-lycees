@@ -42,7 +42,7 @@ module.exports = function(app) {
         {
           lycees: getLycees
         // Save the dataset as exportable values
-        }, function(err, res) {          
+        }, function(err, res) {                  
           module.exports.lycees  = res.lycees;          
         }
       );
@@ -56,7 +56,7 @@ module.exports = function(app) {
  * @param  {Function} callback Callback function 
  */
 var getLycees = module.exports.getLycees = function(callback) {
-  getTable("1tKbe33RbVG_gkB-FHlkVWPPtE6HQLAmOkYLwXMM", callback);
+  getTable("1WtzVDQmgOo2RdjjYwimwtMq8T2yECkXvsxrTybE", callback);
 };
 
 
@@ -72,13 +72,18 @@ var getTable = module.exports.getTable = function(key, callback) {
 
   // Checks the client
   if(!client) return callback({error: "No client available"}, null);
-  
+  var query = [];
+  query.push("SELECT * ");
+  query.push("FROM " + escape(key))
+  //query.push("WHERE 'Code Nature UAI' NOT EQUAL TO '' ");
+  query.push("WHERE Geo NOT EQUAL TO '#N/A' LIMIT 5000 ");
+
   // Creates a batch request
   client
     .newBatchRequest()
-    .add('fusiontables.query.sql', { sql: "SELECT * FROM " + escape(key) + " WHERE 'Code Nature UAI' NOT EQUAL TO '' "})
+    .add('fusiontables.query.sql', { sql: query.join("\n") })
     .execute(null, function(err, res, headers) {
- 
+      
       // Spread the error
       if(res == null || !res.length || res[0] == null) return callback(err, null);
 

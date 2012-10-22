@@ -1,7 +1,7 @@
-new (function(window, undefined) {
+var a = new (function(window, undefined) {
 
   var that        = this;
-  var tableMerged = '1tKbe33RbVG_gkB-FHlkVWPPtE6HQLAmOkYLwXMM';
+  var tableMerged = '1WtzVDQmgOo2RdjjYwimwtMq8T2yECkXvsxrTybE';
   var apiKey      = 'AIzaSyALQzqhaM30UDeVoDQ8ZBAW2LAqVtNQKl8';
 
   // Shoud we show the lycee's statut on the map ?
@@ -12,11 +12,13 @@ new (function(window, undefined) {
       // Close the existing infowindow
       that.closeInfobox();
       // Empty all inputs and trigger a change event (to reset some form's)
-      $(":input").val("").trigger("change");
+      $(":input").val("");
+      // Update filiere filter fields
+      that.updateFiliereInputs();
       // Show all markers
       that.initMarkerLayer();      
       // Open the first form
-      that.el.$menu.find("fieldset").addClass("hidden").eq(0).removeClass("hidden");
+      that.el.$menu.find(".filters").addClass("hidden").eq(0).removeClass("hidden");
       // Move to the first card
       that.goToCard(0);
     }
@@ -36,10 +38,10 @@ new (function(window, undefined) {
         var ids = [];
         for(var index in data) {
           if( data[index].score > 10 )
-            ids.push("'" + data[index].original.uai + "'");
+            ids.push(data[index].original.uai);
         }
         
-        that.initMarkerLayer(true, "UAI IN(" + ids.join(",") + ")");
+        that.initMarkerLayer(true, {"uai": ids});
       });
     }
   };
@@ -58,7 +60,7 @@ new (function(window, undefined) {
       if (statut == google.maps.GeocoderStatus.OK) {
         // Looks for the points 5 km arround the center
         var where = "ST_INTERSECTS(Geo, CIRCLE( LATLNG" + results[0].geometry.location.toString() + ", 5000) )";
-        that.getPoints(where, function(err, points) {
+        that.getPointsFromGFT(where, function(err, points) {
           points = points || [];
           if(points.length == 0) return alert('Aucun résultat trouvé');
           // Show all markers
@@ -90,14 +92,14 @@ new (function(window, undefined) {
    */
   that.filiereFilter = function(event) {
     event.preventDefault();
-    var $input = $(event.target);
 
+    var $input = $(event.target);
     // DETERMINES THE SOUS-FILIERES OPTIONS
-    if( $input.is("[name='filiere']") ) {
+    if( $input.is("[name='filiere-ppi']") ) {
       // Current selected filiere
-      var filiere       = that.el.$filiereFilter.find(":input[name='filiere']").val();
+      var filiere       = that.el.$filiereFilter.find(":input[name='filiere-ppi']").val();
       // Sous-filiere select box
-      var $sousFilieres = that.el.$filiereFilter.find(":input[name='sous-filiere']");  
+      var $sousFilieres = that.el.$filiereFilter.find(":input[name='sous-filiere-ppi']");  
       // An empty option for default value
       var $emptyOption  = $("<option>").attr("value", "").html("--")  
 
@@ -111,9 +113,15 @@ new (function(window, undefined) {
       if( $newOptions.length ) $sousFilieres.append( $newOptions );
     }
 
+    // Toggle the next select box if it's not empty 
+    // and the previous one has a value
+    var values = that.updateFiliereInputs();
 
-    // TOGGLE THE NEXT SELECT BOX IF IT'S NOT EMPTY 
-    // AND THE PREVIOUS ONE HAS A VALUE
+    // Load the marker, the values are the constraints
+    that.initMarkerLayer(true, values);
+  };
+
+  that.updateFiliereInputs = function() {
 
     var disableNext = false;
     // Disabled every input after the first one that is empty
@@ -131,7 +139,7 @@ new (function(window, undefined) {
       $this.parents(".row-fluid").find(".reset").toggleClass("hide", $this.val() == "");
     });
 
-    // POPULATE THE WHERE CLAUSE ACCORING THE FORM    
+    // Populate the where clause accoring the form    
     // Gets the whole form's values
     var values = {};
     $.each( that.el.$filiereFilter.serializeArray(), function(i, field) {
@@ -140,38 +148,9 @@ new (function(window, undefined) {
     });
 
     // Should we show the lycee's statut ?
-    that.showStatut = _.has(values, "filiere");
+    that.showStatut = _.has(values, "filiere-ppi");
 
-    // Adds the where condition following the field names
-    var where = "";
-    $.each(values, function(field, value) {
-
-      switch(field) {  
-
-        case "level":
-          var addWhere = " 'Niveau' = '" + value + "' ";
-          break;
-                
-        case "filiere":
-          var addWhere = " 'Filière PPI' = '" + value + "' ";
-          break;
-
-        case "sous-filiere":
-          var addWhere = " 'Sous Filière PPI' = '" + value + "' ";
-          break;
-      }
-
-      // Are we adding a condition ?
-      if(addWhere) {
-        // Is there a condition yet ?
-        where += where != "" ? " AND " + addWhere : addWhere
-      }
-
-    });
-    
-    // Load the marker 
-    that.initMarkerLayer(true, where);
-
+    return values;
   };
 
   that.resetFilter = function(event) {
@@ -211,15 +190,30 @@ new (function(window, undefined) {
           {saturation: -90},
           {gamma: 1}
         ]
+      },
+      { 
+        featureType: "poi", 
+        elementType: "labels",
+        stylers: [ 
+          { visibility: "off" } 
+        ]
+      },
+      {
+        featureType: "transit",
+        stylers: [
+          { visibility: "off" }
+        ]
       }
     ];
 
     // Defines the map options
     var mapOptions = {
       center    : new google.maps.LatLng(48.850258, 2.647705),
-      zoom      : 10,
+      zoom      : 9,
+      minZoom   : 9,
+      maxZoom   : 16,
       mapTypeId : google.maps.MapTypeId.ROADMAP,
-      //styles    : mapStyle,
+      styles    : mapStyle,
       panControl: true,
       zoomControl: true,
       mapTypeControl: false,
@@ -240,8 +234,12 @@ new (function(window, undefined) {
 
   };
 
-
-  that.getPoints = function(where, callback) {
+  /**
+   * Send a SQL query to Google Fusion Table to extract points
+   * @param  {String}   where    The additional where clause
+   * @param  {Function} callback The callback function
+   */
+  that.getPointsFromGFT = function(where, callback) {
 
     callback = callback || function() {};
     // Default where clause is empty
@@ -251,14 +249,13 @@ new (function(window, undefined) {
     query.push("SELECT Geo, UAI, Statut, NOM, ADRESSE, 'Présence internat'");
     query.push("FROM " + tableMerged);
     // Avoid bad entries
-    query.push("WHERE 'Code Nature UAI' NOT EQUAL TO ''");
-    // query.push("AND UAI NOT EQUAL TO '0931827F'");
+    // query.push("WHERE 'Code Nature UAI' NOT EQUAL TO ''");
+    query.push("WHERE Geo NOT EQUAL TO '#N/A' ");
     
     // Conditional WHERE clause
     if(where != "") {
       query.push("AND " + where);
     }
-    query.push("LIMIT 20000");
 
     // Create URL
     var url = 'https://www.googleapis.com/fusiontables/v1/query?callback=?',
@@ -276,11 +273,50 @@ new (function(window, undefined) {
     });
   };
 
+  /**
+   * Extract the points from the server or the cache
+   * @param  {Object}   where    Filter constraints   
+   * @param  {Function} callback Callback function
+   */
+  that.getPointsFromServer = function(where, callback) {
+
+    callback = callback || function() {};
+    // Default where clause is empty
+    where = where || {};      
+
+    // if the points was already loader
+    if( that.allPoints ) return callback(null, that.filterPoints(where, that.allPoints) );
+
+    // Get the data
+    $.getJSON("/all.json", function(data) {      
+      // No data
+      if(!data) return filter({ error: "Error getting points" }, null);      
+      // Save all points
+      that.allPoints = data;
+      // Callback function with filtered points
+      callback(null, that.filterPoints(where, data) ); 
+    });
+
+  };
+
+  that.filterPoints = function(where, points) {
+    // The UAI property should be an array.
+    // That means we have to filter every possibilities.
+    if( _.isArray(where.uai) ) {      
+      // Filter the points with a special clause
+      points = _.filter(points, function(p) {            
+        return where.uai.indexOf(p.uai) > -1;
+      });        
+      // delete the useless property
+      delete where.uai;
+    }
+    return _.isEmpty(where) ? points : _.where(points, where);
+  };
 
   /**
    * Insert the marker on the map
    * @param  {Boolean}   fitBound     Should we ajust the zoom and the pane to the markers ?
-   * @param  {String}    where        Where clause string in the request
+   * @param  {Object}    where        Where clause in the request
    * @param  {Function}  callback     Callback function
    */
   that.initMarkerLayer = function(fitBound, where, callback) {
@@ -293,32 +329,29 @@ new (function(window, undefined) {
     // Ajust the zoom by default
     fitBound = typeof fitBound == "undefined" ? true : fitBound;
     // Default where clause is empty
-    where = where || "";
+    where = where || {};
     // To know if the map show every points or not
-    that.allMarkers = (where == "");
+    that.allMarkers = (where == {});
 
     // Clear the marker only if we change the state
     that.clearMarkers();
 
-    that.getPoints(where, function(err, points) {
+    that.getPointsFromServer(where, function(err, points) {
 
       if(err != null || !points || !points.length) return callback({ error: err }, null);
-            
-      // To removes every marker doublon 
-      var pts = [];
-
+      
       // Fetch every line 
       for(var i in points) {         
 
         // Embedable data for the marker
         var lycee = {
-               geo : points[i][0].split(" "), // Position array of the lycee
-               uai : points[i][1],            // Unique ID of the lycee
-            statut : points[i][2],            // The statut of the lycee (Scolaire or Apprentissage)
-              name : points[i][3],            // The name of the lycee
-              addr : points[i][4],            // The address of the lycee
-          internat : points[i][5] == "oui",            // Is there an internat ?
-          filieres : [ points[i][2] ]         // An array of the differents filieres statut
+               geo : points[i]["geo"].split(" "),             // Position array of the lycee
+               uai : points[i]["uai"],                        // Unique ID of the lycee
+              name : points[i]["nom"],                        // The name of the lycee
+              addr : points[i]["adresse"],                    // The address of the lycee
+            statut : points[i]["statut"],                     // Statut of the (Scolaire or Apprentissage)
+          internat : points[i]["presence-internat"] == "oui", // Is there an internat ?
+          filieres : [ points[i]["statut"] ]                  // An array of the differents filieres statut
         };
 
         // The marker already exists
@@ -351,7 +384,7 @@ new (function(window, undefined) {
     var marker = new google.maps.Marker({
       map      : that.map,
       icon     : that.getMarkerIcon(lycee.statut),
-      position : new google.maps.LatLng(lycee.geo[0], lycee.geo[1]),
+      position : new google.maps.LatLng(lycee.geo[1], lycee.geo[0]), // The geo property is upside down
       visible  : that.isLyceeVisible(lycee),
       zIndex   : -1
     });
@@ -386,6 +419,8 @@ new (function(window, undefined) {
     for( var key in that.markers ){           
       that.markers[key].setVisible( that.isLyceeVisible(that.markers[key].lycee) );
     }
+    // The bound should changed
+    that.adjustMapZoom();
   };
 
   /**
@@ -501,8 +536,12 @@ new (function(window, undefined) {
         return iconApprent;
         break;
 
-      default:
+      case "Double":
         return iconDouble;
+        break;
+
+      default:
+        return iconClassic;
         break;
     }
 
@@ -518,15 +557,21 @@ new (function(window, undefined) {
     var bounds = new google.maps.LatLngBounds();
 
     for( var key in that.markers ){           
-      bounds.extend( that.markers[key].getPosition() );            
-    }    
+      if( that.markers[key].getVisible() ) {
+        bounds.extend( that.markers[key].getPosition() );            
+      }
+    }
 
     // Fit the map according to the overlay just if we have more than 0 zero marker 
-    that.map.fitBounds(bounds);
+    if( ! bounds.isEmpty() ) that.map.fitBounds(bounds);
   };
 
   that.goToCard = function(index) {
-    that.el.$menu.scrollTo(".card:eq(" + index + ")", 600);
+    that.el.$menu.toggleClass("detail", !!index)
+    that.el.$menu.find(".slider").scrollTo(".card:eq(" + index + ")", 600);
+    setTimeout(function() {
+      that.cardsHeight();
+    }, 700);
   }
 
   that.initElements = function() {
@@ -543,16 +588,16 @@ new (function(window, undefined) {
   that.initEvents = function() {
 
     // Trigger the reset function when the user goes idle after 5 minutes
-    $.idleTimer(1000*5*60);        
+    $.idleTimer(1000*5*600);        
     $(document).bind("idle.idleTimer", that.askForReset);
 
     // Toggle the forms
-    that.el.$menu.on("click", "legend", function() {
-      var $fieldset = $(this).parents("fieldset");
-      // Toggle the current fieldset      
-      $fieldset.toggleClass("hidden");
+    that.el.$menu.on("click", ".filters > h3", function() {
+      var $filters = $(this).parents(".filters");
+      // Toggle the current filters      
+      $filters.toggleClass("hidden");
       // Close the others in this card
-      $(this).parents(".card").find("fieldset").not( $fieldset ).addClass("hidden");
+      $(this).parents(".card").find(".filters").not( $filters ).addClass("hidden");
     });
 
     // Submit filter forms
@@ -599,6 +644,18 @@ new (function(window, undefined) {
 
   };
 
+  that.cardsHeight = function() {
+
+    that.el.$menu.find(".card").each(function(i, card) {
+      $card = $(card);
+      // Determines the size of the card 
+      // according the card offset's top and the window height
+      var height = $(window).height() - $card.offset().top;
+      // Defines the new card's height
+      $card.css("height", height);
+    })
+  };
+
   
   $(that.init = function() {          
     
@@ -606,6 +663,12 @@ new (function(window, undefined) {
     that.initEvents();  
     that.initTemplates();  
     that.initMaps();
+
+    that.el.$menu.find(".card").jScrollPane({ autoReinitialise  : true });
+    // Defines the cards height    
+    that.cardsHeight();
+    // Dynamicly re-calculate when the window is resized
+    $(window).on("resize", that.cardsHeight);
 
   });
 

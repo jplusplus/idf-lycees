@@ -62,6 +62,11 @@ module.exports = function(app) {
     res.json(list);
   });
 
+
+  app.get('/all.json', function(req, res) {    
+    res.json(data.lycees || []);  
+  });
+
   app.get('/lycees.json', function(req, res) {
 
     var list = getLycees(); 
