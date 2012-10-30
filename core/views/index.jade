@@ -26,65 +26,93 @@ block scripts
 block body
   #menu
     .menu-header
-      | ILE DE LA FRANCE
+      h1 Les lycées<br />de votre région
+      img(src="/images/tetiere-logo.png", class="idf")
+      img(src="/images/tetiere-batiment1.png", class="batiment1")
+      img(src="/images/tetiere-batiment2.png", class="batiment2")
+      img(src="/images/pointeurs.png", class="pointeurs")
+      .explore Explorez<br />les filières scolaires<br />et d'apprentissage
+      h2.lycee Lorem ipsum dolor si amet
+      a.back Retour  
     .slider
       .wrapper
         .card
-          .filters
+          .filters.hidden
             h3 Rechercher un lycée par son nom
             form.inputs.form-search#lyceeFilter
               label
-                | Vous connaissez déjà le nom du lycée que vous cherchez ?<br />
-                | Entrez-le pour localiser l'établissement sur la carte.            
-              .input-append   
-                input(type="text", name="lycee", placeholder="Ex : Albert Triboulet", autocomplete="off").input-medium.search-query
-                button(type="submit").btn Chercher
+                | Vous cherchez un lycée en particulier ?<br />
+                | Localisez le sur la carte et découvrez son offre de filières.<br />              
+                input(type="text", name="lycee", placeholder="Ex : Albert Triboulet", autocomplete="off").input-search.right05
+              button(type="submit").btn.btn-red Chercher
 
           
           .filters.hidden
-            h3 Trouver les lycées près de chez moi      
+            h3 Trouver les lycées près de chez vous
             form.inputs.form-search#placeFilter
-              label
-                | Entrez votre adresse pour trouver les établissements près de chez vous           
-              .input-append   
-                input(type="text", name="place", placeholder="Ex : 21, rue des Vertues").input-medium.search-query
-                button(type="submit").btn Chercher
+              label(for="pl1")
+                | Entrez votre adresse pour trouver les établissements près de chez vous.        
 
-          .filters.hidden
-            h3 Trouver une filière
-            form.inputs#filiereFilter
-              p Utiliser les critères ci-dessous pour afﬁcher les établissements qui vous intéressent
-              .row-fluid 
-                label
-                  .span3 Niveau
-                  select(name="niveau").span8
-                    option(value="")  --
-                    option(value="Pré-Bac")  Pré-bac
-                    option(value="Post-Bac") Post-bac
-                .span1.pull-right.reset.hide X
+              .internat.checkbox.top10           
+                input(type="checkbox", name="hasInternat", id="hi1")
+                label(for="hi1") Uniquement avec internat
+              
+              input(type="text", name="place", id="pl1", placeholder="Ex : 21, rue des Vertues").input-search.right05
+              button(type="submit").btn.btn-red Chercher
 
-              .row-fluid.hide
-                label
-                  .span3 Filière
-                  select(name="filiere-ppi",disabled=true).span8
-                    option(value="")  --
-                    each filiere in filieres
-                        option(value=filiere["filiere-ppi"])=filiere["filiere-ppi"]
-                .span1.pull-right.reset.hide X
+          .filters
+            h3 Découvrir les filières
 
-              .row-fluid.hide
-                label
-                  .span3 Sous filière
-                  select(name="sous-filiere-ppi",disabled=true).span8
-                    option(value="")  --
-                    each sousFiliere in sousFilieres
-                      option(value=sousFiliere["sous-filiere-ppi"], data-filiere=sousFiliere["filiere-ppi"])=sousFiliere["sous-filiere-ppi"]
-                .span1.pull-right.reset.hide X
+            .inputs
+              p Afficher les établissements correspondant<br />aux critères de votre choix.
+              .internat.checkbox.top10
+                input(type="checkbox", name="hasInternat", id="hi2")
+                label(for="hi2") Uniquement avec internat
 
-          .internat
-            label.checkbox
-              input(type="checkbox", name="hasInternat")
-              | Avec internat
+              form#filiereFilter.bottom0
+                .row-fluid
+                  label.select
+                    .span3 Niveau
+                    .span8
+                        select(name="niveau")
+                          option(value="")  Choisissez...
+                          option(value="Pré-Bac")  Pré-bac
+                          option(value="Post-Bac") Post-bac
+                  .span1.pull-right.reset.hide X
+
+                .row-fluid.hide
+                  label.select
+                    .span3 Filière
+                    .span8
+                        select(name="filiere-ppi",disabled=true)
+                          option(value="")  Choisissez...
+                          each filiere in filieres
+                            if filiere["filiere-ppi"] != ""
+                              option(value=filiere["filiere-ppi"])=filiere["filiere-ppi"]
+                  .span1.pull-right.reset.hide X
+
+                .row-fluid.select.hide
+                  label.select
+                    .span3 Sous filière
+                    .span8
+                        select(name="sous-filiere-ppi",disabled=true)
+                          option(value="")  Choisissez...
+                          each sousFiliere in sousFilieres
+                            if sousFiliere["sous-filiere-ppi"] != ""
+                              option(value=sousFiliere["sous-filiere-ppi"], data-filiere=sousFiliere["filiere-ppi"])=sousFiliere["sous-filiere-ppi"]
+                  .span1.pull-right.reset.hide X
+
+                .row-fluid.tc.legend
+                  .span4
+                    img(src="/images/pointeur-apprenti.png")
+                    | Scolaire
+                  .span4
+                    img(src="/images/pointeur-scolaire.png")
+                    | Apprentissage
+                  .span4
+                    img(src="/images/pointeur-mixte.png")
+                    | Scolaire&nbsp;et<br />apprentissage
+
 
         .card
           .lycee

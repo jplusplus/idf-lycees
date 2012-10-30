@@ -1,47 +1,99 @@
 mixin statutLabel(statut)
   if statut == "Scolaire"
-    .label.pull-right.label-info=statut
+    img(src="/images/fiche-pictoscolaire.png", alt=statut).left05
   else
-    .label.pull-right.label-warning=statut
+    img(src="/images/fiche-pictoapprenti.png", alt=statut).left05
 
 mixin filiereTree(filieres, legend)
   .filters.hidden
-    h3=legend
+    h4=legend
     .inputs
       ul
+        - var index = 0;
         each filiere, key in filieres
           if filiere.length == 1
             li
-              mixin statutLabel(filiere[0].statut)
-              =key
+              h5.la-filiere(class=++index%2==0?"odd":"")
+                =key
+                mixin statutLabel(filiere[0].statut)
           else
             li
-              =key
+              h5.la-filiere(class=++index%2==0?"odd":"")=key
               ul
                 each sousfiliere, key in filiere
-                  li
-                    mixin statutLabel(sousfiliere.statut)
-                    =sousfiliere["sous-filiere-ppi"]
+                  li(class=++index%2==0?"odd":"").la-sous-filiere
+                    ="spé. " + sousfiliere["sous-filiere-ppi"]
+                    mixin statutLabel(sousfiliere.statut)                    
 
-
-.header
-  button(type="button").btn.back.pull-right Retour
-  h2 Fichre lycée
-  p lorem ipsum dolor si amet
 
 .content
-  h4=lycee.nom
-  .uai="N° UAI : "+lycee.uai
-  if lycee["presence-dinternat"]
-    .internat="Présence internat : " + lycee["presence-dinternat"]
 
-  if lycee["le-de-la-region"]
-    h3 Le + région pour ce lycée
-    =lycee["le-de-la-region"]
+  //- The adresse is composed of 3 fields
+  .addr=[ lycee.adresse, lycee["code-postal"], lycee["libel-commune"] ].join(", ");  
 
-  h3 Filières
-  if lycee.filieres["Pré-Bac"]
-    mixin filiereTree(lycee.filieres["Pré-Bac"],"Pré-Bac")
+  //- Optional data about access time and interna
+  if  lycee["temps-acces"] != "" || lycee["gare"] != "" || lycee["presence-internat"] != ""
+    .access-time
+      //- Optional time of access
+      if lycee["temps-acces"] != "" && lycee["gare"] != ""     
+        p
+          !="Temps d'accès à pied : "
+          =lycee["temps-acces"] + " min "
+          ="depuis " + lycee["gare"]+"."
 
-  if lycee.filieres["Post-Bac"]
-    mixin filiereTree(lycee.filieres["Post-Bac"],"Post-Bac")
+      else if lycee["temps-acces"] == "" && lycee["gare"] != "" 
+        p
+          ="Accès en transports en commun : "
+          =lycee["gare"]+"."
+
+      else if lycee["temps-acces"] != "" && lycee["gare"] == "" 
+        p
+          !="Temps d'accès à pied : "
+          =lycee["temps-acces"] + " min "
+          ="depuis la gare la plus proche."
+      
+      //- Optional internat
+      if lycee["presence-internat"] != ""
+        ="Internat : " + lycee["presence-internat"] 
+  hr
+
+  //- Optional data about effectif
+  if lycee["eff-global-2011"] != ""
+    if lycee["effectif-apprentissage-global-uai-2011"] != "" && lycee["eff-scolaire-global-uai-2011"] != ""
+      .effectif-parts 
+        ="Effectif en 2011 : " + lycee["eff-global-2011"] + " élèves dont " + lycee["eff-scolaire-global-uai-2011"] + " en scolaire."
+        hr.bottom0
+
+    else if lycee["effectif-apprentissage-global-uai-2011"] != "" && lycee["eff-global-2011"] == ""
+      .effectif-parts 
+        ="Effectif en 2011 : " + lycee["effectif-apprentissage-global-uai-2011"] + " élèves en apprentissage."
+        hr.bottom0
+
+    else if lycee["effectif-apprentissage-global-uai-2011"] == "" && lycee["eff-scolaire-global-uai-2011"] != ""
+      .effectif-parts 
+        ="Effectif en 2011 : " + lycee["eff-scolaire-global-uai-2011"] + " élèves en scolaire."
+        hr.bottom0
+
+
+  //- Optional "+ region"
+  if !lycee["le-de-la-region"]
+    .leplus
+      h3 Le <img src="/images/fiche-pictoplus.png" alt="+" /> Île-de-France
+      =lycee["le-de-la-region"]
+      | Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce ac libero eros. Mauris ornare tempus magna, et faucibus arcu mattis a. Pellentesque sit amet urna nec erat dictum cursus. In feugiat tellus pretium felis facilisis dapibus. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Suspendisse suscipit accumsan arcu, id sagittis lectus tincidunt eu. Suspendisse vulputate dapibus ligula, et laoreet purus elementum at. Vestibulum ornare nibh nec ante fermentum ut fermentum velit bibendum.
+      hr
+
+  .les-filieres
+    h3 Les filières proposées par ce lycée
+    p.sort affuchées par effectif décroissant
+    p.filiere-legend
+      img(src="/images/fiche-pictoscolaire.png").right05
+      | Scolaire
+      img(src="/images/fiche-pictoapprenti.png").right05.left10
+      | Apprentissage
+
+    if lycee.filieres["Pré-Bac"]
+      mixin filiereTree(lycee.filieres["Pré-Bac"],"Pré-Bac")
+
+    if lycee.filieres["Post-Bac"]
+      mixin filiereTree(lycee.filieres["Post-Bac"],"Post-Bac")

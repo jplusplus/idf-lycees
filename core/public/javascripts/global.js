@@ -55,14 +55,22 @@ var a = new (function(window, undefined) {
     // Gets the adresse
     var address = that.el.$placeFilter.find("[name=place]").val();
     // Geocode this adress
-    that.geocoder.geocode( { 'address': address}, function(results, statut) {
+    that.geocoder.geocode( { 'address': address}, function(results, statut) {      
       // If the geocoding succeed
       if (statut == google.maps.GeocoderStatus.OK) {
+
+        // Show all markers
+        if(!that.allMarkers) that.initMarkerLayer(false);
+        // Centers and zoom the maps
+        that.map.setCenter(results[0].geometry.location);
+        // Adapts the zoom
+        that.map.setZoom(14);
+        /*
         // Looks for the points 5 km arround the center
-        var where = "ST_INTERSECTS(Geo, CIRCLE( LATLNG" + results[0].geometry.location.toString() + ", 5000) )";
-        that.getPointsFromGFT(where, function(err, points) {
+        var where = "ST_INTERSECTS(Geocode(ADRESSE), CIRCLE( LATLNG" + results[0].geometry.location.toString() + ", 5000) )";
+        that.getPointsFromGFT(where, function(err, points) {                            
           points = points || [];
-          if(points.length == 0) return alert('Aucun résultat trouvé');
+          if(points.length == 0) return ;//alert('Aucun résultat trouvé');
           // Show all markers
           if(!that.allMarkers) that.initMarkerLayer(false);
           // Centers and zoom the maps
@@ -80,9 +88,9 @@ var a = new (function(window, undefined) {
               12
             )
           );
-        });
+        }); */
       } else {
-        alert('Aucun résultat trouvé');
+        //alert('Aucun résultat trouvé');
       }
     });
   };
@@ -149,6 +157,7 @@ var a = new (function(window, undefined) {
 
     // Should we show the lycee's statut ?
     that.showStatut = _.has(values, "filiere-ppi");
+    that.el.$menu.toggleClass("with-legend", that.showStatut);
 
     return values;
   };
@@ -162,16 +171,20 @@ var a = new (function(window, undefined) {
   /**
    * Load and pre-compile the jade templates files
    */
-  that.initTemplates = function() {
+  that.initTemplates = function(callback) {
+
+    callback = callback || function() {};
     that.templates = {};
 
         var dir = "/templates/",
       templates = {"lycee":"lycee.jade"},
-    jadeOptions = {};
+    jadeOptions = {},
+        tplLeft = 1; // Number of template
 
     for(var key in templates) {
       $.get(dir + templates[key], function(data) {
-        that.templates[key] = jade.compile(data, jadeOptions);
+        that.templates[key] = jade.compile(data, jadeOptions);        
+        if(--tplLeft == 0) callback();
       });
     }
   };
@@ -184,13 +197,6 @@ var a = new (function(window, undefined) {
 
     // Defines the map style
     var mapStyle =  [
-      {              
-        featureType: 'all',
-        stylers: [
-          {saturation: -90},
-          {gamma: 1}
-        ]
-      },
       { 
         featureType: "poi", 
         elementType: "labels",
@@ -264,10 +270,11 @@ var a = new (function(window, undefined) {
       key      : apiKey
     };
 
+    console.log(query.join("\n"));
     // Get the data
     $.getJSON(url, params, function(response, statut) {
       // No data
-      if(statut != "success" || !response.rows) return callback({ error: statut }, null);      
+      if(statut != "success") return callback({ error: statut }, null);      
 
       callback(null, response.rows); 
     });
@@ -401,8 +408,8 @@ var a = new (function(window, undefined) {
     return marker;
   };
 
-  that.isLyceeVisible = function(lycee) {
-    return ! that.el.$hasInternat.is(":checked") || lycee.internat;
+  that.isLyceeVisible = function(lycee) {  
+    return ! that.el.$hasInternat.eq(0).is(":checked") || lycee.internat;
   };
 
   that.clearMarkers = function() { 
@@ -416,6 +423,7 @@ var a = new (function(window, undefined) {
   };
 
   that.updateMarkersVisibility = function() {
+
     for( var key in that.markers ){           
       that.markers[key].setVisible( that.isLyceeVisible(that.markers[key].lycee) );
     }
@@ -481,17 +489,20 @@ var a = new (function(window, undefined) {
     var uai = $(this).parents("[data-uai]").data("uai");
 
     // Toggle the infobox state
-    var $infobox = $(that.infobox.div_);
+    var $infobox = $(that.infobox.div_),
+    // Select and emptys the lycee title
+          $title = that.el.$menuHeader.find(".lycee").empty();
     $infobox.addClass("js-open").css("max-height", $infobox.find("h4").height() );
     
     // Load the lycee
-    $.getJSON("/lycees/" + uai + ".json", function(data) {
+    $.getJSON("/lycees/" + uai + ".json", function(data) {      
+      $title.html( data.nom );
       // Compile the template with the lycee
       var html = that.templates.lycee({ lycee: data });
       // Populate the second card with the lycee
       that.el.$menu.find(".card:eq(1) .lycee").html(html);
       // Scroll to the lycee's fiche
-      that.goToCard(1);
+      that.goToCard(1);        
     });
 
     return false;
@@ -519,10 +530,10 @@ var a = new (function(window, undefined) {
 
   that.getMarkerIcon = function(statut) {
 
-    var iconClassic = "http://maps.gstatic.com/mapfiles/ridefinder-images/mm_20_white.png",
-       iconScolaire = "http://maps.gstatic.com/mapfiles/ridefinder-images/mm_20_blue.png",
-        iconApprent = "http://maps.gstatic.com/mapfiles/ridefinder-images/mm_20_yellow.png",
-         iconDouble = "http://maps.gstatic.com/mapfiles/ridefinder-images/mm_20_green.png";
+    var iconClassic = "/images/pointeur-general.png",
+       iconScolaire = "/images/pointeur-scolaire.png",
+        iconApprent = "/images/pointeur-apprenti.png",
+         iconDouble = "/images/pointeur-mixte.png";
 
     if(!that.showStatut) return iconClassic;
 
@@ -568,7 +579,7 @@ var a = new (function(window, undefined) {
 
   that.goToCard = function(index) {
     that.el.$menu.toggleClass("detail", !!index)
-    that.el.$menu.find(".slider").scrollTo(".card:eq(" + index + ")", 600);
+    that.el.$menu.find(".slider").scrollTo(".card:eq(" + index + ")", 700);
     setTimeout(function() {
       that.cardsHeight();
     }, 700);
@@ -578,6 +589,7 @@ var a = new (function(window, undefined) {
     that.el = {
       $map            : $("#map"),
       $menu           : $("#menu"),
+      $menuHeader     : $("#menu .menu-header"),
       $lyceeFilter    : $("#lyceeFilter"),
       $placeFilter    : $("#placeFilter"),
       $filiereFilter  : $("#filiereFilter"),
@@ -592,7 +604,7 @@ var a = new (function(window, undefined) {
     $(document).bind("idle.idleTimer", that.askForReset);
 
     // Toggle the forms
-    that.el.$menu.on("click", ".filters > h3", function() {
+    that.el.$menu.on("click", ".filters > h3, .filters > h4", function() {
       var $filters = $(this).parents(".filters");
       // Toggle the current filters      
       $filters.toggleClass("hidden");
@@ -606,7 +618,10 @@ var a = new (function(window, undefined) {
     that.el.$filiereFilter.on("change", that.filiereFilter);
     that.el.$filiereFilter.on("click touchend", ".reset", that.resetFilter);
     that.el.$menu.on("click touchend", ".back", function() { that.goToCard(0) });
-    that.el.$hasInternat.on("change", that.updateMarkersVisibility);
+    that.el.$hasInternat.on("change", function() {
+      that.el.$hasInternat.not(this).prop("checked", $(this).is(":checked") );
+      that.updateMarkersVisibility()
+    });
 
     // Get all lycées to setup the autocomplete
     $.getJSON("/lycees.json", function(data) {

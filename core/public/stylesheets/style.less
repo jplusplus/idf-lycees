@@ -1,17 +1,112 @@
 @import "tools.less";
 
-@menuWidth:350px;
+@menuWidth:390px;
 @cardCount:2;
 
-h1, h2, h3, h4, h5, h6, legend {
+body {
+  overflow:hidden;
+  width:100%;
+  height:100%;
+}
+
+body, h1, h2, h3, h4, h5, h6, legend, .btn-red, select {
   font-family:"Gill", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-weight:200;
+}
+
+h1 {
+  font-size: 31px;
+  line-height: 33px;
+  color: #FFF;
+  text-transform: uppercase;  
+}
+
+input.input-search {
+  border:0;
+  padding:11px 10px;
+  margin-top:5px;
+  width:223px - (2px * 10px);
+  height:34px - (2px * 11px);
+  background:url("../images/accordeon-recherche.png") no-repeat 0 0;
+  .box-shadow(0);
+
+  &:focus {    
+    .box-shadow(0);
+    outline:0;
+  }
+}
+
+select, input[type="file"] {
+  border:0;
+  width:223px;
+  height: 34px;
+  line-height: 34px;
+  background:url("../images/accordeon-menuderoulant.png") no-repeat 0 0;
+}
+
+input.btn-red, button.btn-red {
+  padding: 4px 0;
+  width:130px;
+  border:0;
+  .box-shadow(0);
+  .transition(~"0s !important");
+  margin-bottom: 0; // For input.btn  
+  margin-top:5px;
+
+  font-size: 13px;
+  line-height: 28px;
+  *line-height: 28px;
+
+  color:white;
+  text-transform: uppercase; 
+  text-shadow:none;
+
+  background:url("../images/btrouge.png") no-repeat 0 0 white;
+
+  &:hover, &:focus, &:active {
+    color:white;
+    background:url("../images/btrouge.png") no-repeat -139px 0 white !important;
+  }  
+}
+
+
+
+.checkbox {
+
+  padding-left:0;
+
+  input[type="checkbox"] {
+    display:none;
+  }
+
+  input[type="checkbox"] + label {
+    position:relative;
+    padding-left:20px;
+  }
+
+  input[type="checkbox"] + label:before {
+    content:"";
+
+    position:absolute;
+    top:-2px;
+    left:0;
+
+    width:16px;
+    height:16px;
+    background:url("../images/accordeon-checkbox.png") no-repeat 0 0;
+  }
+
+  input[type="checkbox"]:checked + label:before {
+    background-position:-50px 0;
+  }
+
 }
 
 #map {
   position:absolute;
   top:0;
   left:@menuWidth;
-  bottom:0;
+  bottom:-30px;
   right:0;
 
   padding:0;
@@ -89,23 +184,162 @@ h1, h2, h3, h4, h5, h6, legend {
   z-index:20;
   width:@menuWidth;
   overflow:hidden;  
-  background:white;
-  .box-shadow(0 -10px 10px fade(black, 60%));
+  background:#fff;
+  .box-shadow(0 0 50px fade(black, 100%));
+
+  font-size: 14px;
+  line-height: 16px;  
+  color: #666;
 
   .menu-header {
+
+    position:relative;
     color:white;
-    padding:20px 20px;
+    padding:10px;
     margin:0 -10px;
     margin-bottom:5px;
-    background: #006784;
+    height:276px;
+    background: url("../images/tetiere-fond.png") 0px 0px;
     font-size:25px;
-    .box-shadow(0 0 10px fade(black, 60%) inset);
+    text-align: center;
     .transition(0.7s);
+    width:@menuWidth - (1px * 10px);
+
+    h1, .idf, .pointeurs, .batiment1, .batiment2, .lycee, .explore {
+      .transition(0.7s);
+      .opacity(100);
+    }
+
+
+    .lycee {
+      position:absolute;      
+      top:205px;
+      text-transform: uppercase;
+      color:#fff;
+      font-size:25px;
+      line-height:28px;
+      text-align:center;
+      padding:10px;      
+      left:10px;
+      width:@menuWidth - (2px*10px);
+      margin-left:@menuWidth;   
+    }
+
+    .back {
+      padding:10px;
+      position:absolute;
+      top:5px;
+      right:5px;
+      text-indent:9999px;
+      color:transparent;
+      background: url("../images/tetiere-bt.png") 10px 10px no-repeat;
+      width:25px;
+      height:25px;
+      cursor:pointer;
+
+      margin-right:-1px * @menuWidth;    
+      margin-top:100px;
+      .transition(margin 0.7s);
+
+      &:hover {
+        background-position: -25px 10px;
+      }
+    }
+
+    .idf {
+      position:absolute;
+      top:85px;
+      left:50%;
+      margin-left:170px/-2px;
+    }
+
+    .batiment1, .batiment2 {
+      position:absolute;
+      top:135px;
+      left:50%;      
+      margin-left:158px/-2px;
+    }
+
+
+    .batiment2 {
+      top:125px;
+      margin-left:@menuWidth;
+    }
+
+
+    .explore {
+      position:absolute;
+      top:210px;
+
+      width:100%;
+      font-size: 15px;
+      line-height: 19px;
+      text-transform: uppercase;
+      margin:0;
+    }
+
+    .pointeurs {
+      position:absolute;
+      top:175px;
+      left:50%;      
+      margin-left:319px/-2px;
+    }
   }
 
   &.detail .menu-header {
-    font-size:15px;
-    padding:10px 20px;
+    height:176px-(10px*2px);
+    background-position:0 -100px;
+
+    h1, .idf, .pointeurs, .batiment1 {
+      margin-top:-100px;
+      .opacity(0);
+    }
+
+    .batiment1, .explore {
+      .opacity(100);
+      margin-left:-1px * @menuWidth;
+    }
+
+    .explore {
+      margin-top:-100px;
+    }
+
+    .batiment2 {      
+      margin-top:-100px;
+      margin-left:163px/-2px;
+    }
+
+    .back {
+      margin:0;
+    }
+
+    .lycee {
+      margin:0; 
+      top:105px;
+    }
+
+  }
+
+
+  .legend {
+
+    .transition(0.7s);
+    .opacity(0);
+
+    height:0;
+    padding-bottom:10px;
+    overflow:hidden;
+
+    img {
+      display:block;
+      margin:10px auto;
+    }
+
+  }
+
+  &.with-legend .legend {
+    height:auto;
+    .opacity(100);
   }
 
   .slider {
@@ -120,7 +354,7 @@ h1, h2, h3, h4, h5, h6, legend {
       .transition(0.7s);
 
       .lycee {
-        padding:20px;
+        padding:10px 15px;
 
         .filters {
           margin:20px 0;
@@ -135,54 +369,215 @@ h1, h2, h3, h4, h5, h6, legend {
 
   .filters {
     
-    width:@menuWidth - 30px*2px;
-    margin:20px;
-    margin-bottom:10px;    
+    margin:0;  
     padding:0;    
-    .box-shadow(0 2px 4px 0 fade(black, 60%) );
+    background:url("/images/accordeon-fond.png") repeat-x left bottom;
     .transition(0.4s); 
-    .border-radius(5px);
 
     h3 {
-      background:silver;
+      position:relative;
       display:block;
-      padding:10px;      
+      padding:0px 15px;      
       margin:0;
-      line-height: 1em;
-      font-size:12px;
-      font-weight:bold;      
+
       cursor:pointer;
-      text-transform: uppercase;
       border:0;      
-      max-height:20px;
+
+      font-size: 18px;
+      color: #E31B1D;
+
+      &:after {
+        content:"";
+        position:absolute;
+        top:10px;
+        right:15px;
+
+        display:block;
+        background:url("/images/accordeon-bt.png") -29px 0 no-repeat;
+        width:19px;
+        height:19px;
+      }
     }
 
     .inputs {              
       overflow:hidden;
-      max-height:250px;
+      max-height:280px;
       margin:0;
-      padding:10px;  
+      padding:0 16px;
+      padding-bottom:30px;  
       .transition(0.4s); 
       
       label {
-        display:inline;
-      }                 
+        display:inline;        
+
+        &.select {
+          font-size: 12px;          
+          color: #E31B1D;
+          text-transform: uppercase;
+
+          select {
+            font-size: 15px;            
+            color: #4D4D4D;
+          }
+
+          .span3 {
+            padding-top:10px;
+          }          
+        }
+      }                
+
     }
 
     .reset {
+      padding-top:14px;
       cursor:pointer;
     }
 
-    &.hidden {
-      
-      .box-shadow(0 0 4px 0 fade(black, 60%) );
+    .internat {    
+      display:block;
+      padding-top:0px;  
+      padding-bottom:5px;  
+      font-size: 16px;
+      color: #4D4D4D;
+    }
 
+    &.hidden {
+
+      h3:after {
+        background-position:0 0;
+      }
+      
       .inputs {
-        padding:0 10px;
+        padding:0 16px;
         max-height:0px;      
       }
     }
 
-  }    
+  }  
+
+  .lycee {
+
+    .addr, .effectif-parts {
+      font-size: 18px;
+      line-height: 18px;
+      color: #333;
+    }
+
+    .access-time {
+      font-size: 16px;
+      line-height: 17px;
+      color: #666666;
+      p {
+        margin:0;
+      }
+    }
+
+    hr {
+      margin:12px 0;
+      margin-bottom:10px;
+      background:#dbdbdb;
+
+      &.bottom0 {
+        margin-bottom:0 !important;
+      }
+    }
+
+    .sort {
+      font-size:12px;
+      color:#666666;
+    }
+
+    .leplus {
+
+      h3 {
+        text-align:center;              
+        font-size: 18px;        
+        color: #E31B1D;
+        text-transform: uppercase;
+      }
+    }
+
+    .les-filieres {            
+
+      font-size: 16px;
+      line-height: 22px;
+      color: #333;
+
+      .filters{
+        background:white;
+
+        .inputs {
+          max-height:500px;
+        }
+
+        &.hidden .inputs {
+          max-height:0px;
+        }
+
+        &.hidden h4:after {
+          .rotate(180deg);
+        }
+      }
+
+      h3, h4 {
+        font-size: 14px;
+        line-height:18px;        
+        color:#E31B1D;
+        margin:0;
+      }
+
+      h4 {
+        position:relative;
+        text-transform: uppercase;
+        border-bottom:1px solid #363636;
+        cursor:pointer;
+
+        &:after {
+          content:"";
+          position:absolute;
+          top:5px;
+          right:10px;
+
+          width:13px;
+          height:6px;
+          background:url("/images/bac-fleche.png") no-repeat;
+          .transition(0.6s);
+        }
+      }
+
+      .la-filiere {
+        background:#cccccc;
+        font-size: 16px;
+        line-height: 22px;        
+        color: #333;
+        padding:4px 10px;
+
+        &.odd {
+          background:white;
+        }
+      }
+
+      ul,li,ol,h5,.inputs {
+        padding:0;
+        margin:0;
+        list-style:none;
+      }
+
+      .la-sous-filiere {        
+        font-size: 16px;
+        line-height: 22px;        
+        color: #333;
+        padding:4px 10px;
+        padding-left:50px;
+        background:#e6e6e6;
+
+        &.odd {
+          background:white;
+        }
+      }
+      
+
+    }
+  }
   
 }
