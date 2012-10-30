@@ -177,15 +177,22 @@ var a = new (function(window, undefined) {
     that.templates = {};
 
         var dir = "/templates/",
-      templates = {"lycee":"lycee.jade"},
+      templates = {"lycee":"lycee.jade", "infobox":"infobox.jade"},
     jadeOptions = {},
-        tplLeft = 1; // Number of template
+        tplLeft = 2; // Number of template
 
     for(var key in templates) {
-      $.get(dir + templates[key], function(data) {
-        that.templates[key] = jade.compile(data, jadeOptions);        
-        if(--tplLeft == 0) callback();
-      });
+
+      $.ajax(dir + templates[key],
+            {
+              context: { key: key }, 
+              dataType:"text", 
+              success: function(data) {        
+                that.templates[this.key] = jade.compile(data, jadeOptions);
+                if(--tplLeft == 0) callback();
+              }
+            }
+          );
     }
   };
 
@@ -355,6 +362,7 @@ var a = new (function(window, undefined) {
                geo : points[i]["geo"].split(" "),             // Position array of the lycee
                uai : points[i]["uai"],                        // Unique ID of the lycee
               name : points[i]["nom"],                        // The name of the lycee
+             label : points[i]["libelle-code-nature-uai"],    // Code NAture UAI
               addr : points[i]["adresse"],                    // The address of the lycee
             statut : points[i]["statut"],                     // Statut of the (Scolaire or Apprentissage)
           internat : points[i]["presence-internat"] == "oui", // Is there an internat ?
@@ -440,23 +448,8 @@ var a = new (function(window, undefined) {
     var marker = this;
 
     // Content of the info box
-    var infoboxContent = [];
-    infoboxContent.push("<div class='row-fluid' id='infobox-lycee' data-uai='" +  marker.lycee.uai +"'>");  
-      infoboxContent.push("<div class='span10'>");  
-        infoboxContent.push("<h4>");
-          infoboxContent.push(marker.lycee.name);
-        infoboxContent.push("</h4>");        
-        infoboxContent.push("<p>");
-          infoboxContent.push(marker.lycee.addr);
-        infoboxContent.push("</p>");
-      infoboxContent.push("</div>");
-      infoboxContent.push("<div class='span2'>"); 
-         infoboxContent.push("<a class='btn btn-inverse btn-mini btn-block'>info</a>");
-      infoboxContent.push("</div>");
-    infoboxContent.push("</div>");
-
     var options = {
-        content: infoboxContent.join(""),
+        content: that.templates.infobox({lycee : marker.lycee }),
         boxClass: "js-info-box",
         enableEventPropagation: false,
         maxWidth: 0,
@@ -490,19 +483,25 @@ var a = new (function(window, undefined) {
 
     // Toggle the infobox state
     var $infobox = $(that.infobox.div_),
-    // Select and emptys the lycee title
-          $title = that.el.$menuHeader.find(".lycee").empty();
-    $infobox.addClass("js-open").css("max-height", $infobox.find("h4").height() );
+    // Select the lycee title
+          $title = that.el.$menuHeader;
+    // Emptys the title
+    $title.find("small,.name").empty();
+
+    $infobox.addClass("js-open").css("max-height", $infobox.find("h4").outerHeight() );
     
     // Load the lycee
-    $.getJSON("/lycees/" + uai + ".json", function(data) {      
-      $title.html( data.nom );
+    $.getJSON("/lycees/" + uai + ".json", function(data) {    
+
+      $title.find("small").html( data["libelle-code-nature-uai"] );
+      $title.find(".name").html( data.nom );
+
       // Compile the template with the lycee
       var html = that.templates.lycee({ lycee: data });
       // Populate the second card with the lycee
       that.el.$menu.find(".card:eq(1) .lycee").html(html);
       // Scroll to the lycee's fiche
-      that.goToCard(1);        
+      that.goToCard(1);    
     });
 
     return false;

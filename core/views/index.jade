@@ -32,7 +32,9 @@ block body
       img(src="/images/tetiere-batiment2.png", class="batiment2")
       img(src="/images/pointeurs.png", class="pointeurs")
       .explore Explorez<br />les filières scolaires<br />et d'apprentissage
-      h2.lycee Lorem ipsum dolor si amet
+      h2.lycee 
+        small Nature du lycée
+        .name Nom du lycée
       a.back Retour  
     .slider
       .wrapper
@@ -43,7 +45,7 @@ block body
               label
                 | Vous cherchez un lycée en particulier ?<br />
                 | Localisez le sur la carte et découvrez son offre de filières.<br />              
-                input(type="text", name="lycee", placeholder="Ex : Albert Triboulet", autocomplete="off").input-search.right05
+                input(type="text", name="lycee", placeholder="Ex : Albert Camus", autocomplete="off").input-search.right05
               button(type="submit").btn.btn-red Chercher
 
           
@@ -57,7 +59,7 @@ block body
                 input(type="checkbox", name="hasInternat", id="hi1")
                 label(for="hi1") Uniquement avec internat
               
-              input(type="text", name="place", id="pl1", placeholder="Ex : 21, rue des Vertues").input-search.right05
+              input(type="text", name="place", id="pl1", placeholder="Ex : 21, rue des Vertus").input-search.right05
               button(type="submit").btn.btn-red Chercher
 
           .filters
@@ -104,18 +106,19 @@ block body
 
                 .row-fluid.tc.legend
                   .span4
-                    img(src="/images/pointeur-apprenti.png")
+                    img(src="/images/pointeur-scolaire.png")
                     | Scolaire
                   .span4
-                    img(src="/images/pointeur-scolaire.png")
+                    img(src="/images/pointeur-apprenti.png")
                     | Apprentissage
                   .span4
                     img(src="/images/pointeur-mixte.png")
                     | Scolaire&nbsp;et<br />apprentissage
 
 
-        .card
+        .card.large
           .lycee
 
+      #menu-footer
 
   #map

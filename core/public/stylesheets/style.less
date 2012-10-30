@@ -1,6 +1,7 @@
 @import "tools.less";
 
 @menuWidth:390px;
+@menuWidthOpen:470px;
 @cardCount:2;
 
 body {
@@ -44,7 +45,8 @@ select, input[type="file"] {
   background:url("../images/accordeon-menuderoulant.png") no-repeat 0 0;
 }
 
-input.btn-red, button.btn-red {
+input.btn-red, button.btn-red,
+input.btn-white, button.btn-white {
   padding: 4px 0;
   width:130px;
   border:0;
@@ -61,12 +63,31 @@ input.btn-red, button.btn-red {
   text-transform: uppercase; 
   text-shadow:none;
 
-  background:url("../images/btrouge.png") no-repeat 0 0 white;
+  &.btn-red {
 
-  &:hover, &:focus, &:active {
-    color:white;
-    background:url("../images/btrouge.png") no-repeat -139px 0 white !important;
-  }  
+    background:url("../images/btrouge.png") no-repeat 0 0 white;
+
+    &:hover, &:focus, &:active {
+      color:white;
+      background:url("../images/btrouge.png") no-repeat -139px 0 white !important;
+    }  
+
+  }
+
+  &.btn-white {
+
+    background:url("../images/btblanc.png") no-repeat 0 1px white;
+    width:115px;
+    color:#000;
+
+    line-height: 20px;
+    *line-height: 20px;
+
+    &:hover, &:focus, &:active {
+      color:#000;
+      background:url("../images/btblanc.png") no-repeat -123px 1px white !important;
+    }  
+  }
 }
 
 
@@ -119,22 +140,34 @@ input.btn-red, button.btn-red {
   img { max-width: none; }
 
   .js-info-box {
+
     position:relative; 
     z-index:2000;   
     background:white;
-    padding:5px;
+    padding:12px 13px;
     width:200px;
-    margin-left:-110px;
+    margin-left:-126px;
     max-height:200px;
     .border-radius(5px);
-    .box-shadow(0 2px 8px 0 rgba(0,0,0,0.5) );
+    .box-shadow(0 2px 20px 0 rgba(0,0,0,0.5) );
     .transition(max-height 0.6s);
 
     h4 {
       padding:0;
+      padding-bottom:5px;
       margin:0;
-      font-size:14px;
-      font-weight:bold;
+      font-size: 18px;
+      line-height:20px;
+      color: #E31B1D;
+      text-transform: uppercase;
+      position:relative;
+      z-index:20;
+
+      small {
+        color: #E31B1D;
+        font-size: 12px;
+        line-height:14px;
+      }
     }
 
     p {
@@ -145,15 +178,15 @@ input.btn-red, button.btn-red {
     &:after {
       content:"";
       position:absolute;
-      bottom:-5px;
+      bottom:-7px;
       left:50%;
-      margin-left:-5px;
+      margin-left:-10px;
       background:white;
-      width:10px;
-      height:10px;
+      width:20px;
+      height:20px;
       z-index:10;
       .rotate(45deg);
-      .box-shadow(4px 4px 4px 0  rgba(0,0,0,0.5) );
+      .box-shadow(10px 10px 10px 0 rgba(0,0,0,0.5) );
     }
 
     .btn {
@@ -186,10 +219,21 @@ input.btn-red, button.btn-red {
   overflow:hidden;  
   background:#fff;
   .box-shadow(0 0 50px fade(black, 100%));
+  .transition(0.7s);
 
   font-size: 14px;
   line-height: 16px;  
   color: #666;
+
+  &.detail {
+
+    width:@menuWidthOpen;
+
+    .menu-header {
+      width:@menuWidthOpen - (1px * 10px);
+    }
+
+  }
 
   .menu-header {
 
@@ -213,16 +257,23 @@ input.btn-red, button.btn-red {
 
     .lycee {
       position:absolute;      
-      top:205px;
+      top:195px;
       text-transform: uppercase;
       color:#fff;
       font-size:25px;
       line-height:28px;
       text-align:center;
-      padding:10px;      
+      padding:10px;    
+      padding-top:0;  
       left:10px;
-      width:@menuWidth - (2px*10px);
-      margin-left:@menuWidth;   
+      width:@menuWidthOpen - (2px*10px);
+      margin-left:@menuWidthOpen;
+
+      small {
+        color:#fff;
+        font-size:12px;
+        line-height:14px;
+      }
     }
 
     .back {
@@ -315,7 +366,7 @@ input.btn-red, button.btn-red {
 
     .lycee {
       margin:0; 
-      top:105px;
+      top:95px;
     }
 
   }
@@ -353,6 +404,10 @@ input.btn-red, button.btn-red {
       float:left;
       .transition(0.7s);
 
+      &.large {
+        width:@menuWidthOpen;
+      }
+
       .lycee {
         padding:10px 15px;
 
@@ -363,7 +418,7 @@ input.btn-red, button.btn-red {
     }
 
     .wrapper {
-      width:@menuWidth*@cardCount;
+      width:@menuWidth+@menuWidthOpen;
     }
   }
 
