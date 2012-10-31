@@ -7,23 +7,6 @@ var a = new (function(window, undefined) {
   // Shoud we show the lycee's statut on the map ?
   that.showStatut = false;
 
-  that.askForReset = that.reset = function() {
-    if( confirm("Recommencer la visite ?") ) {      
-      // Close the existing infowindow
-      that.closeInfobox();
-      // Empty all inputs and trigger a change event (to reset some form's)
-      $(":input").val("");
-      // Update filiere filter fields
-      that.updateFiliereInputs();
-      // Show all markers
-      that.initMarkerLayer();      
-      // Open the first form
-      that.el.$menu.find(".filters").addClass("hidden").eq(0).removeClass("hidden");
-      // Move to the first card
-      that.goToCard(0);
-    }
-  };
-
   /**
    * Submit the form lyceeFilter and update the map   
    */
@@ -90,7 +73,7 @@ var a = new (function(window, undefined) {
           );
         }); */
       } else {
-        //alert('Aucun résultat trouvé');
+        that.openPopup("#noResultAlert");
       }
     });
   };
@@ -363,7 +346,8 @@ var a = new (function(window, undefined) {
                uai : points[i]["uai"],                        // Unique ID of the lycee
               name : points[i]["nom"],                        // The name of the lycee
              label : points[i]["libelle-code-nature-uai"],    // Code NAture UAI
-              addr : points[i]["adresse"],                    // The address of the lycee
+                                                              // The address of the lycee
+              addr : points[i]["adresse"] + "<br />" + points[i]["code-postal"]  + ", " + points[i]["libel-commune"], 
             statut : points[i]["statut"],                     // Statut of the (Scolaire or Apprentissage)
           internat : points[i]["presence-internat"] == "oui", // Is there an internat ?
           filieres : [ points[i]["statut"] ]                  // An array of the differents filieres statut
@@ -496,6 +480,11 @@ var a = new (function(window, undefined) {
       $title.find("small").html( data["libelle-code-nature-uai"] );
       $title.find(".name").html( data.nom );
 
+      // Zoom and pan to the lycee
+      var geo = data.geo.split(" ");
+      that.map.setCenter( new google.maps.LatLng(geo[1], geo[0]) );
+      if( that.map.getZoom() < 10 ) that.map.setZoom(10);
+
       // Compile the template with the lycee
       var html = that.templates.lycee({ lycee: data });
       // Populate the second card with the lycee
@@ -582,13 +571,55 @@ var a = new (function(window, undefined) {
     setTimeout(function() {
       that.cardsHeight();
     }, 700);
-  }
+  };
+
+  that.askForReset = function() {
+    that.openPopup("#askForReset");
+    // Force the reset in 30 seconds
+    that.resetTimeout = setTimeout(function() {
+      that.closePopup();
+      that.resetForm();
+    }, 30*1000);
+  };
+
+
+  that.resetForm = function() {  
+    // Clear the existing timeout
+    if(that.resetTimeout) clearTimeout(that.resetTimeout); 
+    // Close the existing infowindow
+    that.closeInfobox();
+    // Empty all inputs and trigger a change event (to reset some form's)
+    $(":input").val("");
+    // Update filiere filter fields
+    that.updateFiliereInputs();
+    // Show all markers
+    that.initMarkerLayer();      
+    // Open the first form
+    that.el.$menu.find(".filters").addClass("hidden").eq(0).removeClass("hidden");
+    // Move to the first card
+    that.goToCard(0);
+  };
+
+  that.openPopup = function(selector) {
+    that.el.$popup.filter(selector).removeClass("hide");
+    that.el.$overlay.removeClass("hide");
+  };
+
+  that.closePopup = function() {
+    that.el.$overlay.addClass("hide");
+    that.el.$popup.addClass("hide");
+    // Clear the existing timeout
+    if(that.resetTimeout) clearTimeout(that.resetTimeout); 
+  };
 
   that.initElements = function() {
     that.el = {
+      $overlay        : $(".js-overlay"),
+      $popup          : $(".js-popup-box"),
       $map            : $("#map"),
       $menu           : $("#menu"),
       $menuHeader     : $("#menu .menu-header"),
+      $menuFooter     : $("#menu-footer"),
       $lyceeFilter    : $("#lyceeFilter"),
       $placeFilter    : $("#placeFilter"),
       $filiereFilter  : $("#filiereFilter"),
@@ -599,7 +630,7 @@ var a = new (function(window, undefined) {
   that.initEvents = function() {
 
     // Trigger the reset function when the user goes idle after 5 minutes
-    $.idleTimer(1000*5*600);        
+    $.idleTimer(1000*60*5);        
     $(document).bind("idle.idleTimer", that.askForReset);
 
     // Toggle the forms
@@ -611,16 +642,21 @@ var a = new (function(window, undefined) {
       $(this).parents(".card").find(".filters").not( $filters ).addClass("hidden");
     });
 
-    // Submit filter forms
+    // Submit filter forms    
     that.el.$lyceeFilter.on("change submit", that.lyceeFilter);
     that.el.$placeFilter.on("submit", that.placeFilter);
     that.el.$filiereFilter.on("change", that.filiereFilter);
     that.el.$filiereFilter.on("click touchend", ".reset", that.resetFilter);
     that.el.$menu.on("click touchend", ".back", function() { that.goToCard(0) });
     that.el.$hasInternat.on("change", function() {
+      // Check all option boxes
       that.el.$hasInternat.not(this).prop("checked", $(this).is(":checked") );
       that.updateMarkersVisibility()
-    });
+    });    
+    // Close the popup
+    $(".js-close-popup").on("click", that.closePopup);
+    // Reset the form
+    $(".js-reset-form").on("click", that.resetForm);
 
     // Get all lycées to setup the autocomplete
     $.getJSON("/lycees.json", function(data) {
@@ -664,9 +700,12 @@ var a = new (function(window, undefined) {
       $card = $(card);
       // Determines the size of the card 
       // according the card offset's top and the window height
-      var height = $(window).height() - $card.offset().top;
+      var paddingBottom = that.el.$menuFooter.outerHeight(),
+                 height = $(window).height() - $card.offset().top - paddingBottom ;
       // Defines the new card's height
-      $card.css("height", height);
+      $card.css({
+        "height":height
+      });
     })
   };
 
@@ -678,7 +717,7 @@ var a = new (function(window, undefined) {
     that.initTemplates();  
     that.initMaps();
 
-    that.el.$menu.find(".card").jScrollPane({ autoReinitialise  : true });
+    that.el.$menu.find(".card").jScrollPane({ autoReinitialise  : true, hideFocus: true });
     // Defines the cards height    
     that.cardsHeight();
     // Dynamicly re-calculate when the window is resized

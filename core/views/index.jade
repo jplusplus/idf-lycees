@@ -120,5 +120,23 @@ block body
           .lycee
 
       #menu-footer
+        | Données scolaire : enquêtes élèves 20111 MEN / Rectorat.<br />
+        | Données apprentissage : R IDF. Géocodage 2011 : MEN / DEPP.
 
-  #map
+  .overflow
+    #map      
+    .js-overlay.js-close-popup.js-reset-form.hide
+
+    .js-popup-box.hide#noResultAlert
+      h2 Désolé !
+      p Aucun établissement<br />ne correspond à ces critères
+      button.btn.btn-red.btn-long.js-close-popup.js-reset-form Réprendre au début
+
+    .js-popup-box.hide#askForReset
+      h2 Êtes-vous mort ?
+      p Voulez-vous reprendre<br />la recherche au début ?
+      button.btn.btn-red.btn-long.js-close-popup.js-reset-form Réprendre au début
+      | <br />
+      button.btn.btn-white.btn-long.js-close-popup Conserver la recherche
+
+        

@@ -4,10 +4,13 @@
 @menuWidthOpen:470px;
 @cardCount:2;
 
-body {
+.overflow {
+  position:absolute;
+  left:0;
+  right:0;
+  top:0;
+  bottom:0;
   overflow:hidden;
-  width:100%;
-  height:100%;
 }
 
 body, h1, h2, h3, h4, h5, h6, legend, .btn-red, select {
@@ -45,8 +48,8 @@ select, input[type="file"] {
   background:url("../images/accordeon-menuderoulant.png") no-repeat 0 0;
 }
 
-input.btn-red, button.btn-red,
-input.btn-white, button.btn-white {
+input.btn-red, button.btn-red, .btn-red,
+input.btn-white, button.btn-white, .btn-white {
   padding: 4px 0;
   width:130px;
   border:0;
@@ -65,17 +68,30 @@ input.btn-white, button.btn-white {
 
   &.btn-red {
 
+    white-space:nowrap;
     background:url("../images/btrouge.png") no-repeat 0 0 white;
 
     &:hover, &:focus, &:active {
+
       color:white;
       background:url("../images/btrouge.png") no-repeat -139px 0 white !important;
     }  
+
+    &.btn-long {
+      width:180px;      
+      background-image:url("../images/btroug-long.png"); 
+
+      &:hover, &:focus, &:active {           
+        background-position:-188px 0 !important; 
+        background-image:url("../images/btroug-long.png") !important; 
+      }
+    }
 
   }
 
   &.btn-white {
 
+    white-space:nowrap;
     background:url("../images/btblanc.png") no-repeat 0 1px white;
     width:115px;
     color:#000;
@@ -87,6 +103,19 @@ input.btn-white, button.btn-white {
       color:#000;
       background:url("../images/btblanc.png") no-repeat -123px 1px white !important;
     }  
+
+
+    &.btn-long {
+      font-size:10px;
+      width:180px;      
+      background-image:url("../images/btblanc-long.png"); 
+
+      &:hover, &:focus, &:active {           
+        background-position:-188px 0 !important; 
+        background-image:url("../images/btblanc-long.png") !important; 
+      }
+    }
+
   }
 }
 
@@ -124,6 +153,8 @@ input.btn-white, button.btn-white {
 }
 
 #map {
+
+  min-width:800px;
   position:absolute;
   top:0;
   left:@menuWidth;
@@ -167,12 +198,15 @@ input.btn-white, button.btn-white {
         color: #E31B1D;
         font-size: 12px;
         line-height:14px;
+        display:block;  
+        padding:0;
       }
     }
 
     p {
       padding:0;
       margin:0;
+      line-height:18px;
     }
 
     &:after {
@@ -395,7 +429,7 @@ input.btn-white, button.btn-white {
 
   .slider {
 
-    width:@menuWidth;
+    width:@menuWidthOpen;
     overflow:hidden;   
 
     .card {
@@ -635,4 +669,62 @@ input.btn-white, button.btn-white {
     }
   }
   
+}
+
+#menu-footer {
+  font-size:12px;
+  position:absolute;  
+  padding:10px 15px;
+  bottom:0px;
+  left:0px;
+  background:#fff;
+  color:#666666;
+  width:@menuWidth - (15px*2) - 15px;
+
+  .detail & {
+    width:@menuWidthOpen - (15px*2) - 15px;    
+  }
+
+}
+
+.js-overlay {
+  z-index:20;
+
+  position:absolute;
+  top:0;
+  bottom:0;
+  left:0;
+  right:0; 
+
+  background:fade(#000, 70%);   
+}
+
+.js-popup-box {
+
+  text-align:center;
+
+  padding:50px 40px;
+  width:370px;
+
+  z-index:25;
+  position:absolute;
+  top:10%;
+  left:50%;
+  margin-left:(370px+40px*2px)/-2px;
+
+  background: #fff;
+  .border-radius(5px);
+  .box-shadow(0 2px 20px 0 rgba(0,0,0,0.5) );
+  .transition(max-height 0.6s);
+
+  font-size:20px;
+
+  h2 {    
+    font-size: 20px;
+    line-height:24px;        
+    color:#E31B1D;
+    margin:0;
+    margin-bottom:30px;
+    text-transform: uppercase; 
+  }
 }
