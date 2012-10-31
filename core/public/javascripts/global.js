@@ -48,6 +48,8 @@ var a = new (function(window, undefined) {
         that.map.setCenter(results[0].geometry.location);
         // Adapts the zoom
         that.map.setZoom(14);
+        that.addUserPlaceMarker(results[0].geometry.location);
+
         /*
         // Looks for the points 5 km arround the center
         var where = "ST_INTERSECTS(Geocode(ADRESSE), CIRCLE( LATLNG" + results[0].geometry.location.toString() + ", 5000) )";
@@ -75,6 +77,16 @@ var a = new (function(window, undefined) {
       } else {
         that.openPopup("#noResultAlert");
       }
+    });
+  };
+
+  that.addUserPlaceMarker = function(latLng) {
+    that.placeMarker = new google.maps.Marker({
+      map       : that.map,
+      icon      : "/images/pointeur-adresse.png",
+      position  : latLng,
+      animation : google.maps.Animation.DROP,
+      zIndex    : 10
     });
   };
 
@@ -322,6 +334,11 @@ var a = new (function(window, undefined) {
     
     // Close the existing infowindow
     that.closeInfobox();
+
+    if(that.placeMarker) {
+      that.placeMarker.setMap(null);
+      delete that.placeMarker;
+    }
 
     // Ajust the zoom by default
     fitBound = typeof fitBound == "undefined" ? true : fitBound;
