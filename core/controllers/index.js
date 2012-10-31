@@ -89,12 +89,15 @@ module.exports = function(app) {
       lycee.filieres = _.filter(data.lycees, function(d) { return d.uai == lycee.uai });      
       // lycee.sousFilieres = _.filter(data.lycees, function(d) { return d.uai == lycee.uai });           
       
+      // Sorts the filieres
+      lycee.filieres = _.sortBy(lycee.filieres, function(d) { return -1 * d["eff-scolaire-entrants-2011"] });
+
       // Group by niveau
       lycee.filieres = _.groupBy(lycee.filieres, function(d) { return d["niveau"] });
       // For each niveau...
       _.each(lycee.filieres, function(niveau, key) {
         // ...group each niveau by filiere
-        lycee.filieres[key] = _.groupBy(niveau, function(d) { return d["filiere-ppi"] });
+        lycee.filieres[key] = _.groupBy(niveau, function(d) { return d["filiere-ppi"] });                      
       });
           
 
