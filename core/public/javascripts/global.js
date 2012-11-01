@@ -11,11 +11,15 @@ var a = new (function(window, undefined) {
    * Submit the form lyceeFilter and update the map   
    */
   that.lyceeFilter = function(event) {
+    
     event.preventDefault();
-    if(event.type == "submit") return;
+
+    if(event.type == "submit") return;    
 
     var filter = that.el.$lyceeFilter.find("[name=lycee]").val();
+
     if(filter != "") {
+
       $.getJSON("/lycees.json", { filter : filter }, function(data) {
 
         var ids = [];
@@ -26,17 +30,24 @@ var a = new (function(window, undefined) {
         
         that.initMarkerLayer(true, {"uai": ids});
       });
-    }
+
+    // Show all markers
+    } else that.initMarkerLayer(true);    
+    
   };
 
   /**
    * Submit the form placeFilter and update the map   
    */
   that.placeFilter = function(event) {
-    event.preventDefault();
 
+    event.preventDefault();
     // Gets the adresse
     var address = that.el.$placeFilter.find("[name=place]").val();
+
+    // Show all markers
+    if(address == "") return that.initMarkerLayer(true);
+
     // Geocode this adress
     that.geocoder.geocode( { 'address': address}, function(results, statut) {      
       // If the geocoding succeed
