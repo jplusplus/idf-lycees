@@ -684,15 +684,17 @@ var a = new (function(window, undefined) {
       }
 
       that.lyceesList = data;
-      
+
       // Setup the autocomplete with the array of string as data source
       that.el.$lyceeFilter.find(":input[name=lycee]").typeahead({
         // The data source to use
         source: function(txt, callback) {
           // Slugify the search
           txt = slugify(txt);
+          //var data = distinct(that.lyceesList, function(d) { return d.slug });
+          var data = that.lyceesList;
           // Fuzzy search with the slug on the lycee list
-          var res = $(that.lyceesList).map(function(i,lycee){ 
+          var res = $(data).map(function(i,lycee){ 
             // In case of match, returns the lycee's name
             if(lycee.slug.toLowerCase().indexOf(txt.toLowerCase())!=-1){ return lycee.nom } 
           }).get();

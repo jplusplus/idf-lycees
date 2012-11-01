@@ -93,11 +93,11 @@ function slugify(str) {
   return str;
 }
 
-function distinct(collection, map) {
+function distinct(collection, mapFn) {
   return _.map(
           _.groupBy(
             collection,
-            map
+            mapFn
           ),
           function(grouped){
             return grouped[0];
