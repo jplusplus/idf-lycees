@@ -691,8 +691,8 @@ var a = new (function(window, undefined) {
         source: function(txt, callback) {
           // Slugify the search
           txt = slugify(txt);
-          //var data = distinct(that.lyceesList, function(d) { return d.slug });
-          var data = that.lyceesList;
+          var data = distinct(that.lyceesList, function(d) { return d.slug });
+          //var data = that.lyceesList;
           // Fuzzy search with the slug on the lycee list
           var res = $(data).map(function(i,lycee){ 
             // In case of match, returns the lycee's name
