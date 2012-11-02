@@ -12,11 +12,16 @@ var a = new (function(window, undefined) {
    */
   that.lyceeFilter = function(event) {
     
-    event.preventDefault();
 
-    if(event.type == "submit") return;    
+    if(_.isObject(event) ) {
 
-    var filter = that.el.$lyceeFilter.find("[name=lycee]").val();
+      event.preventDefault();
+      var filter = that.el.$lyceeFilter.find("[name=lycee]").val();
+
+    } else {
+      // We received the value directly
+      var filter = event;      
+    }
 
     if(filter != "") {
 
@@ -33,6 +38,8 @@ var a = new (function(window, undefined) {
 
     // Show all markers
     } else that.initMarkerLayer(true);    
+
+    return event
     
   };
 
@@ -674,7 +681,7 @@ var a = new (function(window, undefined) {
     });
 
     // Submit filter forms    
-    that.el.$lyceeFilter.on("change submit", that.lyceeFilter);
+    that.el.$lyceeFilter.on("submit", that.lyceeFilter);
     that.el.$placeFilter.on("submit", that.placeFilter);
     that.el.$filiereFilter.on("change", that.filiereFilter);
     that.el.$filiereFilter.on("click touchend", ".reset", that.resetFilter);
@@ -718,7 +725,9 @@ var a = new (function(window, undefined) {
         // Accepts every data (already filtered by the source function)
         matcher: function() { return true },
         // Disable hiligth
-        highlighter: function(item) { return item }
+        highlighter: function(item) { return item },
+        // Select an element
+        updater: that.lyceeFilter
       });
 
     });

@@ -72,22 +72,22 @@ input.btn-white, button.btn-white, .btn-white {
   text-transform: uppercase; 
   text-shadow:none;
 
-  &.btn-red {
+  &.btn-red, &.btn-red:focus, &.btn-red:active {
 
     white-space:nowrap;
     background:url("../images/btrouge.png") no-repeat 0 0 white;
 
-    &:hover, &:focus, &:active {
+    &:hover {
 
       color:white;
       background:url("../images/btrouge.png") no-repeat -139px 0 white !important;
     }  
 
-    &.btn-long {
+    &.btn-long, &.btn-long:focus, &.btn-long:active {
       width:180px;      
       background-image:url("../images/btroug-long.png"); 
 
-      &:hover, &:focus, &:active {           
+      &:hover {           
         background-position:-188px 0 !important; 
         background-image:url("../images/btroug-long.png") !important; 
       }
