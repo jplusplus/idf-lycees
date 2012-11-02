@@ -46,7 +46,13 @@ select, input[type="file"] {
   height: 34px;
   line-height: 34px;
   background:url("../images/accordeon-menuderoulant.png") no-repeat 0 0;
+
+  &:disabled, &.disabled, .disabled & {
+    background-image:url("../images/accordeon-menuderoulant-disabled.png");  
+  }
 }
+
+
 
 input.btn-red, button.btn-red, .btn-red,
 input.btn-white, button.btn-white, .btn-white {
@@ -120,7 +126,6 @@ input.btn-white, button.btn-white, .btn-white {
 }
 
 
-
 .checkbox {
 
   padding-left:0;
@@ -131,14 +136,16 @@ input.btn-white, button.btn-white, .btn-white {
 
   input[type="checkbox"] + label {
     position:relative;
+    padding:10px;
     padding-left:20px;
+    display:block;
   }
 
   input[type="checkbox"] + label:before {
     content:"";
 
     position:absolute;
-    top:-2px;
+    top:7px;
     left:0;
 
     width:16px;
@@ -177,7 +184,7 @@ input.btn-white, button.btn-white, .btn-white {
     background:white;
     padding:12px 13px;
     width:200px;
-    margin-left:-126px;
+    //margin-left:-126px;
     max-height:200px;
     .border-radius(5px);
     .box-shadow(0 2px 20px 0 rgba(0,0,0,0.5) );
@@ -636,14 +643,12 @@ input.btn-white, button.btn-white, .btn-white {
 
       .la-filiere {
         background:#cccccc;
-        font-size: 16px;
-        line-height: 22px;        
+        font-size: 14px;
+        line-height: 16px;        
         color: #333;
         padding:4px 10px;
-
-        &.odd {
-          background:white;
-        }
+        font-weight:bold;
+        border-bottom:1px solid #fff;
       }
 
       ul,li,ol,h5,.inputs {
@@ -653,8 +658,8 @@ input.btn-white, button.btn-white, .btn-white {
       }
 
       .la-sous-filiere {        
-        font-size: 16px;
-        line-height: 22px;        
+        font-size: 14px;
+        line-height: 16px;        
         color: #333;
         padding:4px 10px;
         padding-left:50px;
@@ -711,6 +716,7 @@ input.btn-white, button.btn-white, .btn-white {
   top:10%;
   left:50%;
   margin-left:(370px+40px*2px)/-2px;
+  
 
   background: #fff;
   .border-radius(5px);

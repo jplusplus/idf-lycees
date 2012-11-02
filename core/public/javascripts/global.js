@@ -146,11 +146,11 @@ var a = new (function(window, undefined) {
       var isEmpty = $this.is("select") && ! $this.find("option[value!='']").length,
        isDisabled = disableNext || isEmpty;
       // Disables and hides the current field
-      $this.attr("disabled", isDisabled).parents(".row-fluid").toggleClass("hide", disableNext);            
-      // Should we disabled the next field ?
-      disableNext = isDisabled || $this.val() == "";
+      $this.attr("disabled", isDisabled).parents(".row-fluid").toggleClass("disabled", isDisabled).toggleClass("hide", disableNext);            
       // Toggle the reset button if it has no value
       $this.parents(".row-fluid").find(".reset").toggleClass("hide", $this.val() == "");
+      // Should we disabled the next field ?
+      disableNext = isDisabled || $this.val() == "";
     });
 
     // Populate the where clause accoring the form    
@@ -466,11 +466,12 @@ var a = new (function(window, undefined) {
         enableEventPropagation: false,
         maxWidth: 0,
         alignBottom: true,
-        pixelOffset: new google.maps.Size(0, -20),
+        pixelOffset: new google.maps.Size(-126, -20),
         zIndex: null,
         closeBoxURL: "",
         position: marker.position,
-        pane: "floatPane" 
+        pane: "floatPane",
+        disableAutoPan: true
     };
 
     // Close the existing infowindow
@@ -479,6 +480,8 @@ var a = new (function(window, undefined) {
     that.infobox = new InfoBox(options);
     // Open the infobox related to the marker map
     that.infobox.open(marker.map);
+    // Center the map to the marker
+    that.map.setCenter(marker.position);
 
     // Bing an event on the button when the domready event is fired on it
     google.maps.event.addListener(that.infobox,'domready',function(){         
@@ -682,9 +685,9 @@ var a = new (function(window, undefined) {
       that.updateMarkersVisibility()
     });    
     // Close the popup
-    $(".js-close-popup").on("click", that.closePopup);
+    $(".js-close-popup").on("click touchend", that.closePopup);
     // Reset the form
-    $(".js-reset-form").on("click", that.resetForm);
+    $(".js-reset-form").on("click touchend", that.resetForm);
 
     // Get all lycées to setup the autocomplete
     $.getJSON("/lycees.json", function(data) {

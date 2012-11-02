@@ -9,19 +9,19 @@ mixin filiereTree(filieres, legend)
     h4=legend
     .inputs
       ul
-        - var index = 0;
         each filiere, key in filieres
-          if filiere.length == 1
+          - var index = 0;
+          if filiere.length == 1 && filiere[0]["sous-filiere-ppi"] == ""
             li
-              h5.la-filiere(class=++index%2==0?"odd":"")
+              h5.la-filiere
                 =key
                 mixin statutLabel(filiere[0].statut)
           else
             li
-              h5.la-filiere(class=++index%2==0?"odd":"")=key
+              h5.la-filiere=key
               ul
                 each sousfiliere, key in filiere
-                  li(class=++index%2==0?"odd":"").la-sous-filiere
+                  li(class=index++%2==0?"odd":"").la-sous-filiere
                     ="spé. " + sousfiliere["sous-filiere-ppi"]
                     mixin statutLabel(sousfiliere.statut)                    
 
@@ -62,6 +62,11 @@ mixin filiereTree(filieres, legend)
     if lycee["effectif-apprentissage-global-uai-2011"] != "" && lycee["eff-scolaire-global-uai-2011"] != ""
       .effectif-parts 
         ="Effectif en 2011 : " + lycee["eff-global-2011"] + " élèves dont " + lycee["eff-scolaire-global-uai-2011"] + " en scolaire."
+        hr.bottom0
+
+    else if lycee["effectif-apprentissage-global-uai-2011"] != "" && lycee["eff-scolaire-global-uai-2011"] == ""
+      .effectif-parts 
+        ="Effectif en 2011 : " + lycee["eff-global-2011"] + " élèves en apprentissage."
         hr.bottom0
 
     else if lycee["effectif-apprentissage-global-uai-2011"] != "" && lycee["eff-global-2011"] == ""
