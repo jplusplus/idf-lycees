@@ -98,7 +98,7 @@ module.exports = function(app) {
       // For each niveau...
       _.each(lycee.filieres, function(niveau, key) {
         // ...group each niveau by filiere
-        lycee.filieres[key] = _.groupBy(niveau, function(d) { return d["filiere-ppi"] });
+        lycee.filieres[key] = _.groupBy(niveau, function(d) { return d["filiere-ppi"] });                
       });
           
 
