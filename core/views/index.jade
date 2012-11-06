@@ -28,15 +28,15 @@ block body
     .menu-header
       h1 Les lycées<br />de votre région
       img(src="/images/tetiere-logo.png", class="idf")
-      img(src="/images/tetiere-batiment1.png", class="batiment1")
+      .batiments
       img(src="/images/tetiere-batiment2.png", class="batiment2")
       img(src="/images/pointeurs.png", class="pointeurs")
       .explore Explorez<br />les filières scolaires<br />et d'apprentissage
       h2.lycee 
         small Nature du lycée
         .name Nom du lycée
-      a.back Retour  
     .slider
+      a.back Retour  
       .wrapper
         .card
           .filters.hidden
@@ -44,7 +44,7 @@ block body
             form.inputs.form-search#lyceeFilter
               label
                 | Vous cherchez un lycée en particulier ?<br />
-                | Localisez le sur la carte et découvrez son offre de filières.<br />              
+                | Localisez-le sur la carte et découvrez son offre de filières.<br />              
                 input(type="text", name="lycee", placeholder="Ex : Albert Camus", autocomplete="off").input-search.right05
               button(type="submit").btn.btn-red Chercher
 
@@ -133,7 +133,7 @@ block body
       button.btn.btn-red.btn-long.js-close-popup Recommencer
 
     .js-popup-box.hide#askForReset
-      h2 Êtes-vous mort ?
+      h2 Vous êtes resté innactif
       p Voulez-vous reprendre<br />la recherche au début ?
       button.btn.btn-red.btn-long.js-close-popup.js-reset-form Réprendre au début
       | <br />

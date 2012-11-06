@@ -122,7 +122,7 @@ var a = new (function(window, undefined) {
       // Sous-filiere select box
       var $sousFilieres = that.el.$filiereFilter.find(":input[name='sous-filiere-ppi']");  
       // An empty option for default value
-      var $emptyOption  = $("<option>").attr("value", "").html("--")  
+      var $emptyOption  = $("<option>").attr("value", "").html("Choisissez...")  
 
       // Backup the sous-filieres list of options
       that.$sousFilieresOptions = that.$sousFilieresOptions || $sousFilieres.find("option").clone();    
@@ -153,7 +153,7 @@ var a = new (function(window, undefined) {
       var isEmpty = $this.is("select") && ! $this.find("option[value!='']").length,
        isDisabled = disableNext || isEmpty;
       // Disables and hides the current field
-      $this.attr("disabled", isDisabled).parents(".row-fluid").toggleClass("disabled", isDisabled).toggleClass("hide", disableNext);            
+      $this.attr("disabled", isDisabled).parents(".row-fluid").toggleClass("disabled hide", isDisabled);            
       // Toggle the reset button if it has no value
       $this.parents(".row-fluid").find(".reset").toggleClass("hide", $this.val() == "");
       // Should we disabled the next field ?
@@ -503,6 +503,9 @@ var a = new (function(window, undefined) {
     // Found the uai in the parent element that contains it
     var uai = $(this).parents("[data-uai]").data("uai");
 
+    // Record the current uai to the back button
+    that.el.$back.data("uai", uai);
+
     // Toggle the infobox state
     var $infobox = $(that.infobox.div_),
     // Select the lycee title
@@ -656,6 +659,8 @@ var a = new (function(window, undefined) {
       $popup          : $(".js-popup-box"),
       $map            : $("#map"),
       $menu           : $("#menu"),
+      $back           : $("#menu .back"),
+      $batiments      : $("#menu .batiments"),
       $menuHeader     : $("#menu .menu-header"),
       $menuFooter     : $("#menu-footer"),
       $lyceeFilter    : $("#lyceeFilter"),
@@ -685,7 +690,13 @@ var a = new (function(window, undefined) {
     that.el.$placeFilter.on("submit", that.placeFilter);
     that.el.$filiereFilter.on("change", that.filiereFilter);
     that.el.$filiereFilter.on("click touchend", ".reset", that.resetFilter);
-    that.el.$menu.on("click touchend", ".back", function() { that.goToCard(0) });
+    that.el.$menu.on("click touchend", ".back", function() { 
+      // Restore the current infobox
+      google.maps.event.trigger(that.markers[ $(this).data("uai") ], 'click');
+      // Go to the first card
+      that.goToCard(0);
+    });
+
     that.el.$hasInternat.on("change", function() {
       // Check all option boxes
       that.el.$hasInternat.not(this).prop("checked", $(this).is(":checked") );
@@ -751,6 +762,16 @@ var a = new (function(window, undefined) {
     })
   };
 
+  that.nextLogoFrame = function() {
+    
+    var  step = that.el.$batiments.data("step") || 1,
+    stepWidth = 390;
+
+    // Slide the logo background
+    that.el.$batiments.css("background-position", -1*step*stepWidth);
+    // Record the next step
+    that.el.$batiments.data("step", step+1);
+  };
   
   $(that.init = function() {          
     
@@ -764,6 +785,8 @@ var a = new (function(window, undefined) {
     that.cardsHeight();
     // Dynamicly re-calculate when the window is resized
     $(window).on("resize", that.cardsHeight);
+    // Animate the logo
+    setInterval(that.nextLogoFrame, 15*1000);
 
   });
 

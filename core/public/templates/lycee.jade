@@ -29,7 +29,7 @@ mixin filiereTree(filieres, legend)
 .content
 
   //- The adresse is composed of 3 fields
-  .addr=[ lycee.adresse, lycee["code-postal"], lycee["libel-commune"] ].join(", ");  
+  .addr=lycee.adresse + ", " + lycee["code-postal"] + " " + lycee["libel-commune"];  
 
   //- Optional data about access time and interna
   if  lycee["temps-acces"] != "" || lycee["gare"] != "" || lycee["presence-internat"] != ""
@@ -61,32 +61,24 @@ mixin filiereTree(filieres, legend)
   if lycee["eff-global-2011"] != ""
     if lycee["effectif-apprentissage-global-uai-2011"] != "" && lycee["eff-scolaire-global-uai-2011"] != ""
       .effectif-parts 
-        ="Effectif en 2011 : " + lycee["eff-global-2011"] + " élèves dont " + lycee["eff-scolaire-global-uai-2011"] + " en scolaire."
-        hr.bottom0
+        ="Effectif en 2011 : " + lycee["eff-global-2011"] + " élèves dont " + lycee["eff-scolaire-global-uai-2011"] + " en scolaire"
+        hr
 
     else if lycee["effectif-apprentissage-global-uai-2011"] != "" && lycee["eff-scolaire-global-uai-2011"] == ""
       .effectif-parts 
-        ="Effectif en 2011 : " + lycee["eff-global-2011"] + " élèves en apprentissage."
-        hr.bottom0
+        ="Effectif en 2011 : " + lycee["eff-global-2011"] + " élèves en apprentissage"
+        hr
 
     else if lycee["effectif-apprentissage-global-uai-2011"] != "" && lycee["eff-global-2011"] == ""
       .effectif-parts 
-        ="Effectif en 2011 : " + lycee["effectif-apprentissage-global-uai-2011"] + " élèves en apprentissage."
-        hr.bottom0
+        ="Effectif en 2011 : " + lycee["effectif-apprentissage-global-uai-2011"] + " élèves en apprentissage"
+        hr
 
     else if lycee["effectif-apprentissage-global-uai-2011"] == "" && lycee["eff-scolaire-global-uai-2011"] != ""
       .effectif-parts 
-        ="Effectif en 2011 : " + lycee["eff-scolaire-global-uai-2011"] + " élèves en scolaire."
-        hr.bottom0
+        ="Effectif en 2011 : " + lycee["eff-scolaire-global-uai-2011"] + " élèves en scolaire"
+        hr
 
-
-  //- Optional "+ region"
-  if !lycee["le-de-la-region"]
-    .leplus
-      h3 Le <img src="/images/fiche-pictoplus.png" alt="+" /> Île-de-France
-      =lycee["le-de-la-region"]
-      | Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce ac libero eros. Mauris ornare tempus magna, et faucibus arcu mattis a. Pellentesque sit amet urna nec erat dictum cursus. In feugiat tellus pretium felis facilisis dapibus. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Suspendisse suscipit accumsan arcu, id sagittis lectus tincidunt eu. Suspendisse vulputate dapibus ligula, et laoreet purus elementum at. Vestibulum ornare nibh nec ante fermentum ut fermentum velit bibendum.
-      hr
 
   .les-filieres
     h3 Les filières proposées par ce lycée
@@ -102,3 +94,11 @@ mixin filiereTree(filieres, legend)
 
     if lycee.filieres["Post-Bac"]
       mixin filiereTree(lycee.filieres["Post-Bac"],"Post-Bac")
+
+  //- Optional "+ region"
+  if !lycee["le-de-la-region"]    
+    .leplus
+      h3 Le <img src="/images/fiche-pictoplus.png" alt="+" /> Île-de-France
+      =lycee["le-de-la-region"]
+      | Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce ac libero eros. Mauris ornare tempus magna, et faucibus arcu mattis a. Pellentesque sit amet urna nec erat dictum cursus. In feugiat tellus pretium felis facilisis dapibus. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Suspendisse suscipit accumsan arcu, id sagittis lectus tincidunt eu. Suspendisse vulputate dapibus ligula, et laoreet purus elementum at. Vestibulum ornare nibh nec ante fermentum ut fermentum velit bibendum.
+      
