@@ -69,22 +69,22 @@ mixin filiereTree(filieres, legend)
     if lycee["effectif-apprentissage-global-uai-2011"] != "" && lycee["eff-scolaire-global-uai-2011"] != ""
       .effectif-parts 
         ="Effectif en 2011 : " + lycee["eff-global-2011"] + " élèves dont " + lycee["eff-scolaire-global-uai-2011"] + " en scolaire"
-        hr
+      hr
 
     else if lycee["effectif-apprentissage-global-uai-2011"] != "" && lycee["eff-scolaire-global-uai-2011"] == ""
       .effectif-parts 
         ="Effectif en 2011 : " + lycee["eff-global-2011"] + " élèves en apprentissage"
-        hr
+      hr
 
     else if lycee["effectif-apprentissage-global-uai-2011"] != "" && lycee["eff-global-2011"] == ""
       .effectif-parts 
         ="Effectif en 2011 : " + lycee["effectif-apprentissage-global-uai-2011"] + " élèves en apprentissage"
-        hr
+      hr
 
     else if lycee["effectif-apprentissage-global-uai-2011"] == "" && lycee["eff-scolaire-global-uai-2011"] != ""
       .effectif-parts 
         ="Effectif en 2011 : " + lycee["eff-scolaire-global-uai-2011"] + " élèves en scolaire"
-        hr
+      hr
 
 
   .les-filieres

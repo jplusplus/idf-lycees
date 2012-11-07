@@ -719,6 +719,12 @@ var a = new (function(window, undefined) {
     $(".js-close-popup").on("click touchend", that.closePopup);
     // Reset the form
     $(".js-reset-form").on("click touchend", that.resetForm);
+    // Reset the form
+    $(".js-reset-filieres").on("click touchend", function() {
+      // Empty all inputs and trigger a change event (to reset some form's)
+      that.el.$filiereFilter.find(":input").val("");
+      that.updateFiliereInputs();
+    });
 
     // Get all lycées to setup the autocomplete
     $.getJSON("/lycees.json", function(data) {
