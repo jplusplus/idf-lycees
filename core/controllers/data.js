@@ -56,7 +56,7 @@ module.exports = function(app) {
  * @param  {Function} callback Callback function 
  */
 var getLycees = module.exports.getLycees = function(callback) {
-  getTable("1WtzVDQmgOo2RdjjYwimwtMq8T2yECkXvsxrTybE", callback);
+  getTable("1G5tXy-DRGrKgF-nXWEQ_LvxCboI1aLE6w0JuHok", callback);
 };
 
 
@@ -76,7 +76,7 @@ var getTable = module.exports.getTable = function(key, callback) {
   query.push("SELECT * ");
   query.push("FROM " + escape(key))
   //query.push("WHERE 'Code Nature UAI' NOT EQUAL TO '' ");
-  query.push("WHERE Geo NOT EQUAL TO '#N/A' LIMIT 5000 ");
+  query.push("WHERE Geo NOT EQUAL TO '#N/A' LIMIT 5002 ");
 
   // Creates a batch request
   client

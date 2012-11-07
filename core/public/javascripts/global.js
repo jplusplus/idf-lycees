@@ -1,7 +1,7 @@
 var a = new (function(window, undefined) {
 
   var that        = this;
-  var tableMerged = '1WtzVDQmgOo2RdjjYwimwtMq8T2yECkXvsxrTybE';
+  var tableMerged = '1G5tXy-DRGrKgF-nXWEQ_LvxCboI1aLE6w0JuHok';
   var apiKey      = 'AIzaSyALQzqhaM30UDeVoDQ8ZBAW2LAqVtNQKl8';
 
   // Shoud we show the lycee's statut on the map ?
@@ -33,6 +33,8 @@ var a = new (function(window, undefined) {
             ids.push(data[index].original.uai);
         }
         
+        if(!ids.length) return that.openPopup("#noResultAlert");
+
         that.initMarkerLayer(true, {"uai": ids});
       });
 
@@ -52,7 +54,7 @@ var a = new (function(window, undefined) {
     // Gets the adresse
     var address = that.el.$placeFilter.find("[name=place]").val();
 
-    // Show all markers
+    // Show all markers 
     if(address == "") return that.initMarkerLayer(true);
 
     // Geocode this adress
@@ -62,22 +64,22 @@ var a = new (function(window, undefined) {
 
         // Show all markers
         if(!that.allMarkers) that.initMarkerLayer(false);
-        // Centers and zoom the maps
-        that.map.setCenter(results[0].geometry.location);
-        // Adapts the zoom
-        that.map.setZoom(14);
-        that.addUserPlaceMarker(results[0].geometry.location);
 
-        /*
+        var position = results[0].geometry.location;
+
         // Looks for the points 5 km arround the center
-        var where = "ST_INTERSECTS(Geocode(ADRESSE), CIRCLE( LATLNG" + results[0].geometry.location.toString() + ", 5000) )";
-        that.getPointsFromGFT(where, function(err, points) {                            
+        var where = "ST_INTERSECTS(Geo, CIRCLE( LATLNG" + position.toString() + ", 5000) )";
+        
+        that.getPointsFromGFT(where, function(err, points) {              
+
           points = points || [];
-          if(points.length == 0) return ;//alert('Aucun résultat trouvé');
+          if(points.length == 0) return that.openPopup("#noResultAlert");
           // Show all markers
           if(!that.allMarkers) that.initMarkerLayer(false);
           // Centers and zoom the maps
-          that.map.setCenter(results[0].geometry.location);
+          that.map.setCenter(position);
+          // Add a pointer to the user's adresse
+          that.addUserPlaceMarker(position);
           // Adapts the zoom following the number of points
           that.map.setZoom( 
             // Take a value > 12
@@ -91,7 +93,7 @@ var a = new (function(window, undefined) {
               12
             )
           );
-        }); */
+        }); 
       } else {
         that.openPopup("#noResultAlert");
       }
@@ -272,11 +274,11 @@ var a = new (function(window, undefined) {
     where = where || "";
     // Create the request to get all Lycées
     var query = [];
-    query.push("SELECT Geo, UAI, Statut, NOM, ADRESSE, 'Présence internat'");
+    query.push("SELECT Latitude, Longitude, UAI, Statut, NOM, ADRESSE, 'Présence internat'");
     query.push("FROM " + tableMerged);
     // Avoid bad entries
     // query.push("WHERE 'Code Nature UAI' NOT EQUAL TO ''");
-    query.push("WHERE Geo NOT EQUAL TO '#N/A' ");
+    query.push("WHERE Latitude NOT EQUAL TO '#N/A' ");
     
     // Conditional WHERE clause
     if(where != "") {
@@ -290,9 +292,9 @@ var a = new (function(window, undefined) {
       key      : apiKey
     };
 
-    console.log(query.join("\n"));
     // Get the data
     $.getJSON(url, params, function(response, statut) {
+
       // No data
       if(statut != "success") return callback({ error: statut }, null);      
 
@@ -378,6 +380,8 @@ var a = new (function(window, undefined) {
         // Embedable data for the marker
         var lycee = {
                geo : points[i]["geo"].split(" "),             // Position array of the lycee
+         longitude : points[i]["longitude"],             
+          latitude : points[i]["latitude"],             
                uai : points[i]["uai"],                        // Unique ID of the lycee
               name : points[i]["nom"],                        // The name of the lycee
              label : points[i]["libelle-code-nature-uai"],    // Code NAture UAI
@@ -413,12 +417,12 @@ var a = new (function(window, undefined) {
 
   that.addMarker = function(lycee) {
 
-    if(lycee.geo[0] == 0 || lycee.geo[1] == 0) return;
+    if(lycee.latitude == 0 || lycee.longitude == 0) return;
 
     var marker = new google.maps.Marker({
       map      : that.map,
       icon     : that.getMarkerIcon(lycee.statut),
-      position : new google.maps.LatLng(lycee.geo[1], lycee.geo[0]), // The geo property is upside down
+      position : new google.maps.LatLng(lycee.latitude, lycee.longitude), // The geo property is upside down
       visible  : that.isLyceeVisible(lycee),
       zIndex   : -1
     });
@@ -522,8 +526,7 @@ var a = new (function(window, undefined) {
       $title.find(".name").html( data.nom );
 
       // Zoom and pan to the lycee
-      var geo = data.geo.split(" ");
-      that.map.setCenter( new google.maps.LatLng(geo[1], geo[0]) );
+      that.map.setCenter( new google.maps.LatLng(data.latitude, data.longitude) );
       if( that.map.getZoom() < 10 ) that.map.setZoom(10);
 
       // Compile the template with the lycee
