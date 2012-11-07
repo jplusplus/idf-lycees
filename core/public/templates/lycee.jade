@@ -103,9 +103,7 @@ mixin filiereTree(filieres, legend)
       mixin filiereTree(lycee.filieres["Post-Bac"],"Post-Bac")
 
   //- Optional "+ region"
-  if !lycee["le-de-la-region"]    
+  if lycee["le-plus"]   
     .leplus
       h3 Le <img src="/images/fiche-pictoplus.png" alt="+" /> Île-de-France
-      =lycee["le-de-la-region"]
-      | Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce ac libero eros. Mauris ornare tempus magna, et faucibus arcu mattis a. Pellentesque sit amet urna nec erat dictum cursus. In feugiat tellus pretium felis facilisis dapibus. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Suspendisse suscipit accumsan arcu, id sagittis lectus tincidunt eu. Suspendisse vulputate dapibus ligula, et laoreet purus elementum at. Vestibulum ornare nibh nec ante fermentum ut fermentum velit bibendum.
-      
+      p!= lycee["le-plus"]

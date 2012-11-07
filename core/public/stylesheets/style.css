@@ -112,7 +112,7 @@ input.btn-red.btn-white.btn-long,button.btn-red.btn-white.btn-long,.btn-red.btn-
 #menu .lycee .access-time{font-size:16px;line-height:17px;color:#666666;padding-right:35px;}#menu .lycee .access-time p{margin:0;}
 #menu .lycee hr{margin:12px 0;margin-bottom:10px;background:#dbdbdb;}#menu .lycee hr.bottom0{margin-bottom:0 !important;}
 #menu .lycee .sort{font-size:12px;color:#666666;}
-#menu .lycee .leplus h3{text-align:center;font-size:18px;color:#E31B1D;text-transform:uppercase;}
+#menu .lycee .leplus{color:#333333;}#menu .lycee .leplus h3{text-align:center;font-size:18px;color:#E31B1D;text-transform:uppercase;}
 #menu .lycee .les-filieres{font-size:16px;line-height:22px;color:#333;}#menu .lycee .les-filieres .filters{background:white;}#menu .lycee .les-filieres .filters .inputs{max-height:500px;}
 #menu .lycee .les-filieres .filters.hidden .inputs{max-height:0px;}
 #menu .lycee .les-filieres .filters.hidden h4:after{-webkit-transform:rotate(-180deg);-moz-transform:rotate(-180deg);-ms-transform:rotate(-180deg);-o-transform:rotate(-180deg);transform:rotate(-180deg);}

@@ -40,10 +40,12 @@ module.exports = function(app) {
       // Get the two dataset
       async.parallel(
         {
-          lycees: getLycees
+          lycees: getLycees,
+          plusLycees: getPlusLycees
         // Save the dataset as exportable values
         }, function(err, res) {                  
-          module.exports.lycees  = res.lycees;          
+          module.exports.lycees  = res.lycees;    
+          module.exports.plusLycees  = res.plusLycees;          
         }
       );
     }
@@ -57,6 +59,13 @@ module.exports = function(app) {
  */
 var getLycees = module.exports.getLycees = function(callback) {
   getTable("1G5tXy-DRGrKgF-nXWEQ_LvxCboI1aLE6w0JuHok", callback);
+}; 
+/**
+ * Get the "plus lycées" dataset
+ * @param  {Function} callback Callback function 
+ */
+var getPlusLycees = module.exports.getPlusLycees = function(callback) {
+  getTable("1hQJkpIB-nbiKBLTgGkgHwwJH1QGGmG5hTpQzDwE", callback);
 };
 
 
@@ -76,7 +85,7 @@ var getTable = module.exports.getTable = function(key, callback) {
   query.push("SELECT * ");
   query.push("FROM " + escape(key))
   //query.push("WHERE 'Code Nature UAI' NOT EQUAL TO '' ");
-  query.push("WHERE Geo NOT EQUAL TO '#N/A' LIMIT 5002 ");
+  query.push("LIMIT 5002 ");
 
   // Creates a batch request
   client

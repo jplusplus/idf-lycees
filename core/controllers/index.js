@@ -23,7 +23,7 @@ module.exports = function(app) {
 
 	app.get('/', function(req, res){
 
-    if(!data.lycees) return res.render('wait.jade');
+    if(!data.lycees || !data.plusLycees) return res.render('wait.jade');
 
 	  res.render('index.jade', {      
       lycees       : getLycees(),
@@ -101,6 +101,10 @@ module.exports = function(app) {
         lycee.filieres[key] = _.groupBy(niveau, function(d) { return d["filiere-ppi"] });                
       });
           
+
+      // Finds the plus lycee
+      lycee["le-plus"] = _.find(data.plusLycees, function(pl) { return pl.uai == lycee.uai; });
+      if(lycee["le-plus"]) lycee["le-plus"] = lycee["le-plus"].information.replace(/\n/g, "<br />");
 
       res.json(lycee);
     } else {
