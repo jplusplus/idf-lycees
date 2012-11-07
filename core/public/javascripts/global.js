@@ -141,7 +141,12 @@ var a = new (function(window, undefined) {
     var values = that.updateFiliereInputs();
 
     // Load the marker, the values are the constraints
-    that.initMarkerLayer(true, values);
+    that.initMarkerLayer(true, values, function(err, p) {
+      // Keeps onlye the visible points
+      p = _.filter(p, function(l) { return that.isLyceeVisible(l) });
+      // Show an error message
+      if(err != null || p.length == 0 ) that.openPopup("#noResultAlert");
+    });
   };
 
   that.updateFiliereInputs = function() {
@@ -365,7 +370,7 @@ var a = new (function(window, undefined) {
     // Default where clause is empty
     where = where || {};
     // To know if the map show every points or not
-    that.allMarkers = (where == {});
+    that.allMarkers = _.isEmpty(where);
 
     // Clear the marker only if we change the state
     that.clearMarkers();
@@ -440,7 +445,7 @@ var a = new (function(window, undefined) {
   };
 
   that.isLyceeVisible = function(lycee) {  
-    return ! that.el.$hasInternat.eq(0).is(":checked") || lycee.internat;
+    return ! that.el.$hasInternat.eq(0).is(":checked") || lycee.internat || lycee["presence-internat"] == "oui";
   };
 
   that.clearMarkers = function() { 
@@ -687,6 +692,8 @@ var a = new (function(window, undefined) {
       // Empty all inputs and trigger a change event (to reset some form's)
       $(":input").val("");
       that.updateFiliereInputs();
+      if( ! that.allMarkers ) that.initMarkerLayer();
+
       // Close the others in this card
       $(this).parents(".card").find(".filters").not( $filters ).addClass("hidden");
     });
