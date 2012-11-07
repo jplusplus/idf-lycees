@@ -95,7 +95,7 @@ var a = new (function(window, undefined) {
           );
         }); 
       } else {
-        that.openPopup("#noResultAlert");
+        that.openPopup("##noAddrAlert");
       }
     });
   };
