@@ -351,7 +351,7 @@ var a = new (function(window, undefined) {
   that.initMarkerLayer = function(fitBound, where, callback) {
 
     callback = callback || function() {};
-    
+
     // Close the existing infowindow
     that.closeInfobox();
 
@@ -680,10 +680,13 @@ var a = new (function(window, undefined) {
     $(document).bind("idle.idleTimer", that.askForReset);
 
     // Toggle the forms
-    that.el.$menu.on("click", ".filters > h3, .filters > h4", function() {
+    that.el.$menu.on("click", ".filters > h3, .filters > h4", function(event) {
       var $filters = $(this).parents(".filters");
       // Toggle the current filters      
       $filters.toggleClass("hidden");
+      // Empty all inputs and trigger a change event (to reset some form's)
+      $(":input").val("");
+      that.updateFiliereInputs();
       // Close the others in this card
       $(this).parents(".card").find(".filters").not( $filters ).addClass("hidden");
     });
