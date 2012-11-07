@@ -16,6 +16,13 @@ mixin filiereTree(filieres, legend)
               h5.la-filiere
                 =key
                 mixin statutLabel(filiere[0].statut)
+          else if filiere.length == 2 && filiere[0]["sous-filiere-ppi"] == ""
+
+            li
+              h5.la-filiere
+                =key
+                mixin statutLabel("Scolaire")
+                mixin statutLabel("Apprentissage")
           else
             li
               h5.la-filiere=key
