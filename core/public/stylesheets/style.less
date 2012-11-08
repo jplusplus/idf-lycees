@@ -283,10 +283,11 @@ input.btn-white, button.btn-white, .btn-white {
   .menu-header {
 
     position:relative;
+    z-index:-1;
     color:white;
     padding:10px;
     margin:0 -10px;
-    margin-bottom:5px;
+    margin-bottom:0;
     height:276px;
     background: url("../images/tetiere-fond.png") 0px 0px;
     font-size:25px;
@@ -301,6 +302,15 @@ input.btn-white, button.btn-white, .btn-white {
     }
 
 
+    &:after {
+      content:"";
+      position:absolute;
+      bottom:0;
+      left:0;
+      right:0;
+      height:28px;
+      background: url("../images/tetiere-shadow.png");
+    }
 
     .lycee {
       position:absolute;      
@@ -431,6 +441,7 @@ input.btn-white, button.btn-white, .btn-white {
 
     width:@menuWidthOpen;
     overflow:hidden;   
+    padding-top:5px;
 
     .card {
       width:@menuWidth;      
@@ -454,32 +465,33 @@ input.btn-white, button.btn-white, .btn-white {
     .wrapper {
       width:@menuWidth+@menuWidthOpen;
     }
+
   }
 
   .back {    
     margin:0;
-    padding:5px 10px;
+    padding:0;
     position:absolute;
-    top:178px + 120px;
-    right:10px - @menuWidthOpen;
+    top:137px + 120px;
+    right:-1px * ( @menuWidthOpen + 40px );
     text-indent:9999px;
     color:transparent;
-    background: url("../images/tetiere-bt.png") 10px 5px no-repeat;
-    width:28px;
-    height:28px;
+    background: url("../images/tetiere-bt.png") 0 0 no-repeat;
+    width:40px;
+    height:40px;
     cursor:pointer;
     z-index:100;
     .transition(~"top 0.7s, right 0.7s");
 
     &:hover {
-      background-position: 10px -28px;
+      background-position:-53px 0;
     }
 
   }
 
   &.detail .back {
-    right:10px;  
-    top:178px;  
+    right:0px;  
+    top:137px;  
   }
 
   .filters {
@@ -711,11 +723,7 @@ input.btn-white, button.btn-white, .btn-white {
   left:0px;
   background:#fff;
   color:#666666;
-  width:@menuWidth - (15px*2) - 15px;
-
-  .detail & {
-    width:@menuWidthOpen - (15px*2) - 15px;    
-  }
+  width:100%;
 
 }
 
