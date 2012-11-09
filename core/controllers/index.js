@@ -86,6 +86,8 @@ module.exports = function(app) {
     var lycee = _.find(getLycees(), function(d) { return d.uai == req.params.uai });
 
     if(lycee) {
+      // Clone the object to avoid working on the global object
+      lycee = _.clone(lycee);
       lycee.filieres = _.filter(data.lycees, function(d) { return d.uai == lycee.uai });      
       // lycee.sousFilieres = _.filter(data.lycees, function(d) { return d.uai == lycee.uai });           
       

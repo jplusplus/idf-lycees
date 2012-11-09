@@ -223,33 +223,7 @@ var a = new (function(window, undefined) {
   that.initMaps = function() {
 
     // Defines the map style
-    var mapStyle =  [ { "elementType" : "geometry.fill",
-                        "featureType" : "road",
-                        "stylers" : [ { "color" : "#ffffff" } ]
-                      },
-                      { "elementType" : "geometry.stroke",
-                        "featureType" : "road",
-                        "stylers" : [ { "color" : "#c4bfb5" } ]
-                      },
-                      { "elementType" : "labels",
-                        "featureType" : "road",
-                        "stylers" : [ { "visibility" : "off" } ]
-                      },
-                      { "elementType" : "labels",
-                        "featureType" : "poi",
-                        "stylers" : [ { "visibility" : "off" } ]
-                      },
-                      { "featureType" : "poi.park",
-                        "stylers" : [ { "color" : "#d7e0be" } ]
-                      },
-                      { "elementType" : "labels.text.fill",
-                        "featureType" : "administrative",
-                        "stylers" : [ { "color" : "#4d4d4d" } ]
-                      },
-                      { "featureType" : "transit",
-                        "stylers" : [ { "visibility" : "off" } ]
-                      }
-                    ];
+    var mapStyle =  [ { "featureType": "road", "elementType": "geometry.fill", "stylers": [ { "color": "#ffffff" } ] },{ "featureType": "road", "elementType": "geometry.stroke", "stylers": [ { "color": "#c4bfb5" } ] },{ "featureType": "road.highway", "elementType": "labels", "stylers": [ { "visibility": "off" } ] },{ "featureType": "road", "elementType": "labels.text.stroke", "stylers": [ { "color": "#ffffff" } ] },{ "featureType": "road.arterial", "elementType": "labels.icon", "stylers": [ { "visibility": "off" } ] },{ "featureType": "poi", "elementType": "labels", "stylers": [ { "visibility": "off" } ] },{ "featureType": "poi.park", "stylers": [ { "color": "#d7e0be" } ] },{ "featureType": "administrative", "elementType": "labels.text.fill", "stylers": [ { "color": "#4d4d4d" } ] }, { "featureType" : "transit", "stylers" : [ { "visibility" : "off" } ] } ];
 
     // Defines the map options
     var mapOptions = {
