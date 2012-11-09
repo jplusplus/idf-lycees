@@ -380,8 +380,8 @@ input.btn-white, button.btn-white, .btn-white {
     .pointeurs {
       position:absolute;
       top:175px;
-      left:50%;      
-      margin-left:319px/-2px;
+      left:40px;
+      margin-left:0;
     }
   }
 
@@ -389,13 +389,15 @@ input.btn-white, button.btn-white, .btn-white {
     height:176px-(10px*2px);
     background-position:0 -100px;
 
-    h1, .idf, .pointeurs, .batiments {
-      margin-top:-100px;
+    h1, .idf {
       .opacity(0);
+      margin-top:-100px;
+      margin-left:-1px * @menuWidth;
     }
 
-    .batiments, .explore {
+    .batiments,  .pointeurs, .explore {
       .opacity(100);
+      margin-top:-100px;
       margin-left:-1px * @menuWidth;
     }
 

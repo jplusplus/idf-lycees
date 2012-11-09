@@ -89,9 +89,9 @@ input.btn-red.btn-white.btn-long,button.btn-red.btn-white.btn-long,.btn-red.btn-
 #menu .menu-header .batiment2{position:absolute;top:135px;left:50%;margin-left:-79px;}
 #menu .menu-header .batiment2{top:125px;margin-left:390px;}
 #menu .menu-header .explore{position:absolute;top:210px;width:100%;font-size:15px;line-height:19px;text-transform:uppercase;margin:0;}
-#menu .menu-header .pointeurs{position:absolute;top:175px;left:50%;margin-left:-159.5px;}
-#menu.detail .menu-header{height:156px;background-position:0 -100px;}#menu.detail .menu-header h1,#menu.detail .menu-header .idf,#menu.detail .menu-header .pointeurs,#menu.detail .menu-header .batiments{margin-top:-100px;opacity:0;filter:alpha(opacity=0);}
-#menu.detail .menu-header .batiments,#menu.detail .menu-header .explore{opacity:1;filter:alpha(opacity=100);margin-left:-390px;}
+#menu .menu-header .pointeurs{position:absolute;top:175px;left:40px;margin-left:0;}
+#menu.detail .menu-header{height:156px;background-position:0 -100px;}#menu.detail .menu-header h1,#menu.detail .menu-header .idf{opacity:0;filter:alpha(opacity=0);margin-top:-100px;margin-left:-390px;}
+#menu.detail .menu-header .batiments,#menu.detail .menu-header .pointeurs,#menu.detail .menu-header .explore{opacity:1;filter:alpha(opacity=100);margin-top:-100px;margin-left:-390px;}
 #menu.detail .menu-header .explore{margin-top:-100px;}
 #menu.detail .menu-header .batiment2{margin-top:-100px;margin-left:-81.5px;}
 #menu.detail .menu-header .lycee{margin:0;top:95px;}

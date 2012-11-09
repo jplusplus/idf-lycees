@@ -223,21 +223,37 @@ var a = new (function(window, undefined) {
   that.initMaps = function() {
 
     // Defines the map style
-    var mapStyle =  [
-      { 
-        featureType: "poi", 
-        elementType: "labels",
-        stylers: [ 
-          { visibility: "off" } 
-        ]
-      },
-      {
-        featureType: "transit",
-        stylers: [
-          { visibility: "off" }
-        ]
-      }
-    ];
+    var mapStyle =  [ { "elementType" : "geometry.fill",
+                        "featureType" : "road",
+                        "stylers" : [ { "color" : "#ffffff" } ]
+                      },
+                      { "elementType" : "geometry.stroke",
+                        "featureType" : "road",
+                        "stylers" : [ { "color" : "#c4bfb5" } ]
+                      },
+                      { "elementType" : "labels",
+                        "featureType" : "road",
+                        "stylers" : [ { "visibility" : "off" } ]
+                      },
+                      { "elementType" : "labels",
+                        "featureType" : "poi",
+                        "stylers" : [ { "visibility" : "off" } ]
+                      },
+                      { "featureType" : "poi.park",
+                        "stylers" : [ { "color" : "#d7e0be" } ]
+                      },
+                      { "elementType" : "labels.text.fill",
+                        "featureType" : "administrative",
+                        "stylers" : [ { "color" : "#4d4d4d" } ]
+                      },
+                      { "elementType" : "labels",
+                        "featureType" : "poi",
+                        "stylers" : [ { "visibility" : "off" } ]
+                      },
+                      { "featureType" : "transit",
+                        "stylers" : [ { "visibility" : "off" } ]
+                      }
+                    ];
 
     // Defines the map options
     var mapOptions = {
