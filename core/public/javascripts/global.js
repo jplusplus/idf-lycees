@@ -246,10 +246,6 @@ var a = new (function(window, undefined) {
                         "featureType" : "administrative",
                         "stylers" : [ { "color" : "#4d4d4d" } ]
                       },
-                      { "elementType" : "labels",
-                        "featureType" : "poi",
-                        "stylers" : [ { "visibility" : "off" } ]
-                      },
                       { "featureType" : "transit",
                         "stylers" : [ { "visibility" : "off" } ]
                       }
