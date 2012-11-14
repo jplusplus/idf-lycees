@@ -12,7 +12,6 @@ var a = new (function(window, undefined) {
    */
   that.lyceeFilter = function(event) {
     
-
     if(_.isObject(event) ) {
 
       event.preventDefault();
@@ -24,6 +23,8 @@ var a = new (function(window, undefined) {
     }
 
     if(filter != "") {
+
+      that.resetForm();
 
       $.getJSON("/lycees.json", { filter : filter }, function(data) {
 
@@ -101,6 +102,8 @@ var a = new (function(window, undefined) {
   };
 
   that.addUserPlaceMarker = function(latLng) {
+    // Do not add the marker twice
+    that.removeUserPlaceMarker();
     that.placeMarker = new google.maps.Marker({
       map       : that.map,
       icon      : "/images/pointeur-adresse.png",
@@ -109,6 +112,13 @@ var a = new (function(window, undefined) {
       zIndex    : 10
     });
   };
+
+  that.removeUserPlaceMarker = function() {
+    if(that.placeMarker) {    
+      that.placeMarker.setMap(null);
+      delete that.placeMarker;
+    }
+  }
 
   /**
    * Submit the form filiereFilter and update the map   
@@ -633,6 +643,10 @@ var a = new (function(window, undefined) {
     that.el.$menu.find(".filters").addClass("hidden").eq(0).removeClass("hidden");
     // Move to the first card
     that.goToCard(0);
+    // Remove the user place marker
+    that.removeUserPlaceMarker();
+    // Reset the internats filters
+    that.el.$menu.find(":checkbox").prop("checked", false);
   };
 
   that.openPopup = function(selector) {
