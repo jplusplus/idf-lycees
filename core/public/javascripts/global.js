@@ -237,7 +237,7 @@ var a = new (function(window, undefined) {
 
     // Defines the map options
     var mapOptions = {
-      center    : new google.maps.LatLng(48.850258, 2.647705),
+      center    : new google.maps.LatLng(48.856583,2.3510745),
       zoom      : 9,
       minZoom   : 9,
       maxZoom   : 16,
@@ -256,7 +256,7 @@ var a = new (function(window, undefined) {
     // Creates the geocoder
     that.geocoder = new google.maps.Geocoder();
     // Add every markers on the map
-    that.initMarkerLayer(true);
+    that.initMarkerLayer(false);
     
     // Close the infobox when we click on the map
     google.maps.event.addListener(that.map, 'click', that.closeInfobox);
@@ -478,7 +478,7 @@ var a = new (function(window, undefined) {
         enableEventPropagation: false,
         maxWidth: 0,
         alignBottom: true,
-        pixelOffset: new google.maps.Size(-126, -20),
+        pixelOffset: new google.maps.Size(-126, -42),
         zIndex: null,
         closeBoxURL: "",
         position: marker.position,
@@ -794,6 +794,9 @@ var a = new (function(window, undefined) {
   
   $(that.init = function() {          
     
+    // iOs detection
+    if( navigator.userAgent.match(/(iphone|ipod|ipad)/i) != null ) $("html").addClass("ios");
+
     that.initElements();
     that.initEvents();  
     that.initTemplates();  
