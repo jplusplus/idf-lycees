@@ -34,6 +34,10 @@ module.exports.filieres = module.exports.lycees = [];
  */
 module.exports = function(app) {
 
+  module.exports.lycees     = require("../data/lycees.json");       
+  module.exports.plusLycees = require("../data/plus-lycees.json");       
+  module.exports.cities     = require("../data/cities.json");       
+
   // Create the fusiontable client
   googleapis.load('fusiontables','v1', function(err, c) {
     // No error
@@ -42,10 +46,6 @@ module.exports = function(app) {
       client = c;
       // Sets API key
       client.setApiKey('AIzaSyALQzqhaM30UDeVoDQ8ZBAW2LAqVtNQKl8');    
-
-      module.exports.lycees     = require("../data/lycees.json");       
-      module.exports.plusLycees = require("../data/plus-lycees.json");       
-      module.exports.cities     = require("../data/cities.json");       
 
       // Get the two dataset
       async.parallel(
