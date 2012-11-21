@@ -23,7 +23,7 @@ module.exports = function(app) {
 
 	app.get('/', function(req, res){
 
-    if(!data.lycees || !data.plusLycees) return res.render('wait.jade');
+    //if(!data.lycees || !data.plusLycees) return res.render('wait.jade');
 
 	  res.render('index.jade', {      
       lycees       : getLycees(),
@@ -113,6 +113,12 @@ module.exports = function(app) {
       res.json(404, { "error" : "Not found" });
     }
   });
+
+  app.get('/plus-lycees.json', function(req, res) {
+    var list = data.plusLycees; 
+    res.json(list);    
+  });
+
 
 };
 

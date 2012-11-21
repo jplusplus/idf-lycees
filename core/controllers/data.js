@@ -11,6 +11,12 @@ var googleapis = require('googleapis');
 var async = require('async');
 
 /**
+ * File interface
+ * @type {Object}
+ */
+var fs = require("fs");
+
+/**
  * API Client
  * @type {Boolean}
  */
@@ -35,7 +41,10 @@ module.exports = function(app) {
       // Record the client
       client = c;
       // Sets API key
-      client.setApiKey('AIzaSyALQzqhaM30UDeVoDQ8ZBAW2LAqVtNQKl8');            
+      client.setApiKey('AIzaSyALQzqhaM30UDeVoDQ8ZBAW2LAqVtNQKl8');    
+
+      module.exports.lycees     = require("../data/lycees.json");       
+      module.exports.plusLycees = require("../data/plus-lycees.json");       
 
       // Get the two dataset
       async.parallel(

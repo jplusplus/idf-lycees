@@ -513,6 +513,7 @@ var a = new (function(window, undefined) {
     // Bing an event on the button when the domready event is fired on it
     google.maps.event.addListener(that.infobox,'domready',function(){         
       $("#infobox-lycee .btn").one("click touchend", that.openLycee);
+      $("#infobox-lycee .js-close").one("click touchend", that.closeInfobox);
     });
 
   };
@@ -608,7 +609,8 @@ var a = new (function(window, undefined) {
 
   that.closeInfobox = function(event) {        
     // Close existing infobox    
-    if(that.infobox) that.infobox.close();    
+    if(that.infobox) that.infobox.close();  
+    return false;    
   };
 
   that.adjustMapZoom = function() {       
