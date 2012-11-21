@@ -233,7 +233,22 @@ var a = new (function(window, undefined) {
   that.initMaps = function() {
 
     // Defines the map style
-    var mapStyle =  [ { "featureType": "road", "elementType": "geometry.fill", "stylers": [ { "color": "#ffffff" } ] },{ "featureType": "road", "elementType": "geometry.stroke", "stylers": [ { "color": "#c4bfb5" } ] },{ "featureType": "road.highway", "elementType": "labels", "stylers": [ { "visibility": "off" } ] },{ "featureType": "road", "elementType": "labels.text.stroke", "stylers": [ { "color": "#ffffff" } ] },{ "featureType": "road.arterial", "elementType": "labels.icon", "stylers": [ { "visibility": "off" } ] },{ "featureType": "poi", "elementType": "labels", "stylers": [ { "visibility": "off" } ] },{ "featureType": "poi.park", "stylers": [ { "color": "#d7e0be" } ] },{ "featureType": "administrative", "elementType": "labels.text.fill", "stylers": [ { "color": "#4d4d4d" } ] }, { "featureType" : "transit", "stylers" : [ { "visibility" : "off" } ] } ];
+    var mapStyle = [ 
+                    { "featureType": "road", "elementType": "geometry.fill", "stylers": [ { "color": "#ffffff" } ] },
+                    { "featureType": "road", "elementType": "geometry.stroke", "stylers": [ { "color": "#c4c4c8" } ] },
+                    { "featureType": "road.highway", "elementType": "labels", "stylers": [ { "visibility": "off" } ] },
+                    { "featureType": "road", "elementType": "labels.text.stroke", "stylers": [ { "color": "#ffffff" } ] },
+                    { "featureType": "road.arterial", "elementType": "labels.icon", "stylers": [ { "visibility": "off" } ] },
+                    { "featureType": "poi", "elementType": "labels", "stylers": [ { "visibility": "off" } ] },
+                    { "featureType": "administrative", "elementType": "labels.text.fill", "stylers": [ { "color": "#4d4d4d" } ] },
+                    { "featureType": "landscape.man_made", "stylers": [ { "color": "#e9e9ee" } ] },
+                    { "featureType": "landscape.natural", "stylers": [ { "color": "#f6f6f8" } ] },
+                    { "featureType": "transit.station.airport", "stylers": [ { "color": "#c4c4c8" } ] },
+                    { "featureType": "poi", "stylers": [ { "color": "#c4c4c8" } ] },
+                    { "featureType": "poi.park", "stylers": [ { "color": "#d7e0be" } ] },
+                    { "featureType": "transit.line", "elementType": "geometry", "stylers": [ { "color": "#a0a0a0" } ] },
+                    { "featureType" : "transit", "stylers" : [ { "visibility" : "off" } ] }
+                   ];
 
     // Defines the map options
     var mapOptions = {
@@ -423,6 +438,11 @@ var a = new (function(window, undefined) {
     var marker = new google.maps.Marker({
       map      : that.map,
       icon     : that.getMarkerIcon(lycee.statut),
+      shadow   : new google.maps.MarkerImage("/images/pointeur-ombre.png",
+                  new google.maps.Size(31, 39),
+                  new google.maps.Point(0,0),
+                  new google.maps.Point(15,30)
+                ),
       position : new google.maps.LatLng(lycee.latitude, lycee.longitude), // The geo property is upside down
       visible  : that.isLyceeVisible(lycee),
       zIndex   : -1
