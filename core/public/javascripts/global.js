@@ -50,16 +50,20 @@ var a = new (function(window, undefined) {
    * Submit the form placeFilter and update the map   
    */
   that.placeFilter = function(event) {
-
-    event.preventDefault();
-    // Gets the adresse
-    var address = that.el.$placeFilter.find("[name=place]").val();
+    
+    if(_.isObject(event) ) {
+      event.preventDefault();    
+      // Gets the adresse
+      var address = that.el.$placeFilter.find("[name=place]").val();
+    } else {
+      var address = event;
+    }
 
     // Show all markers 
     if(address == "") return that.initMarkerLayer(true);
 
     // Geocode this adress
-    that.geocoder.geocode( { 'address': address}, function(results, statut) {      
+    that.geocoder.geocode( { 'address': address +", FRANCE"}, function(results, statut) {      
       // If the geocoding succeed
       if (statut == google.maps.GeocoderStatus.OK) {
 
@@ -69,12 +73,12 @@ var a = new (function(window, undefined) {
         var position = results[0].geometry.location;
 
         // Looks for the points 5 km arround the center
-        var where = "ST_INTERSECTS(Geo, CIRCLE( LATLNG" + position.toString() + ", 15000) )";
+        var where = "ST_INTERSECTS(Geo, CIRCLE( LATLNG" + position.toString() + ", 40000) )";
         
         that.getPointsFromGFT(where, function(err, points) {              
 
           points = points || [];
-          if(points.length == 0) return that.openPopup("#noAddrAlert");
+          //if(points.length == 0) return that.openPopup("#noAddrAlert");
           // Show all markers
           if(!that.allMarkers) that.initMarkerLayer(false);
           // Centers and zoom the maps
@@ -83,13 +87,13 @@ var a = new (function(window, undefined) {
           that.addUserPlaceMarker(position);
           // Adapts the zoom following the number of points
           that.map.setZoom( 
-            // Take a value > 9
+            // Take a value > 8
             Math.max( 
               // Take a value < 13
               Math.min(
                 13, 
                 // Linear function following the points number
-                ~~(9+(points.length/10)) 
+                ~~(8+(points.length/10)) 
               ), 
               12
             )
@@ -99,6 +103,8 @@ var a = new (function(window, undefined) {
         that.openPopup("##noAddrAlert");
       }
     });
+
+    return event;
   };
 
   that.addUserPlaceMarker = function(latLng) {
@@ -254,7 +260,7 @@ var a = new (function(window, undefined) {
     var mapOptions = {
       center    : new google.maps.LatLng(48.856583,2.3510745),
       zoom      : 9,
-      minZoom   : 9,
+      minZoom   : 8,
       maxZoom   : 14,
       mapTypeId : google.maps.MapTypeId.ROADMAP,
       styles    : mapStyle,
@@ -778,6 +784,37 @@ var a = new (function(window, undefined) {
       });
 
     });
+
+    // Get all lycées to setup the autocomplete
+    $.getJSON("/cities.json", function(data) {
+
+      that.cities = data;
+
+      // Setup the autocomplete with the array of string as data source
+      that.el.$placeFilter.find(":input[name=place]").typeahead({
+        // The data source to use
+        source: function(txt, callback) {
+          // Slugify the search
+          txt = slugify(txt);
+          // Fuzzy search with the slug on the lycee list
+          var res = $(that.cities).map(function(i,city){ 
+            // In case of match, returns the lycee's name
+            if(city.toLowerCase().indexOf(txt.toLowerCase())!=-1){ return city }
+          }).get();
+          // Return the data source filtered
+          callback(res);
+        },
+        // Accepts every data (already filtered by the source function)
+        matcher: function() { return true },
+        // Disable hiligth
+        highlighter: function(item) { return item },
+        // Select an element
+        updater: that.placeFilter
+      });
+
+    });
+
+    
 
   };
 
