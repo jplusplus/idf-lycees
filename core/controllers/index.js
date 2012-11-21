@@ -119,6 +119,10 @@ module.exports = function(app) {
     res.json(list);    
   });
 
+  app.get('/cities.json', function(req, res) {    
+    res.json(data.cities);    
+  });
+
 
 };
 
