@@ -438,11 +438,6 @@ var a = new (function(window, undefined) {
     var marker = new google.maps.Marker({
       map      : that.map,
       icon     : that.getMarkerIcon(lycee.statut),
-      shadow   : new google.maps.MarkerImage("/images/pointeur-ombre.png",
-                  new google.maps.Size(31, 39),
-                  new google.maps.Point(0,0),
-                  new google.maps.Point(15,30)
-                ),
       position : new google.maps.LatLng(lycee.latitude, lycee.longitude), // The geo property is upside down
       visible  : that.isLyceeVisible(lycee),
       zIndex   : -1
