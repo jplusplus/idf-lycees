@@ -69,12 +69,12 @@ var a = new (function(window, undefined) {
         var position = results[0].geometry.location;
 
         // Looks for the points 5 km arround the center
-        var where = "ST_INTERSECTS(Geo, CIRCLE( LATLNG" + position.toString() + ", 5000) )";
+        var where = "ST_INTERSECTS(Geo, CIRCLE( LATLNG" + position.toString() + ", 15000) )";
         
         that.getPointsFromGFT(where, function(err, points) {              
 
           points = points || [];
-          if(points.length == 0) return that.openPopup("#noResultAlert");
+          if(points.length == 0) return that.openPopup("#noAddrAlert");
           // Show all markers
           if(!that.allMarkers) that.initMarkerLayer(false);
           // Centers and zoom the maps
@@ -83,13 +83,13 @@ var a = new (function(window, undefined) {
           that.addUserPlaceMarker(position);
           // Adapts the zoom following the number of points
           that.map.setZoom( 
-            // Take a value > 12
+            // Take a value > 9
             Math.max( 
-              // Take a value < 16
+              // Take a value < 13
               Math.min(
-                16, 
+                13, 
                 // Linear function following the points number
-                ~~(10+(points.length/10)) 
+                ~~(9+(points.length/10)) 
               ), 
               12
             )
@@ -255,7 +255,7 @@ var a = new (function(window, undefined) {
       center    : new google.maps.LatLng(48.856583,2.3510745),
       zoom      : 9,
       minZoom   : 9,
-      maxZoom   : 16,
+      maxZoom   : 14,
       mapTypeId : google.maps.MapTypeId.ROADMAP,
       styles    : mapStyle,
       panControl: true,
