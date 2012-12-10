@@ -402,11 +402,11 @@ var a = new (function(window, undefined) {
 
         if(!points[i]["geo"]) continue;
 
+        var geo = points[i]["geo"].split(" ");
         // Embedable data for the marker
         var lycee = {
-               geo : points[i]["geo"].split(" "), // Position array of the lycee
-         longitude : points[i]["longitude"],             
-          latitude : points[i]["latitude"],             
+         longitude : geo[1],             
+          latitude : geo[0],             
                uai : points[i]["uai"],                        // Unique ID of the lycee
               name : points[i]["nom"],                        // The name of the lycee
              label : points[i]["libelle-code-nature-uai"],    // Code NAture UAI                                                              
