@@ -20,6 +20,7 @@ var data = require("./data"),
  *
  */
 module.exports = function(app) {
+  "use strict";
 
 	app.get('/', function(req, res){
 
@@ -63,13 +64,36 @@ module.exports = function(app) {
   });
 
 
-  app.get('/all.json', function(req, res) {    
-    res.json(data.lycees || []);  
+  app.get('/all.json', function(req, res) {  
+
+    var list = data.lycees;
+    list = _.map(list || [], function(l) {
+      return _.omit(l, [
+        "aca", 
+        "eff-scolaire-global-uai-2011",
+        "eff-scolaire-entrants-2011",
+        "effectif-apprentissage-global-uai-2011",
+        "eff-global-2011",
+        "longitude",
+        "latitude",
+        "temps-acces",
+        "temps-acces-transport",
+        "gare",
+        "code-insee",
+         "code-nature-uai"
+      ]);
+    });
+
+    res.json(list);  
   });
 
   app.get('/lycees.json', function(req, res) {
 
     var list = getLycees(); 
+
+    list = _.map(list, function(l) {
+      return _.pick(l, ["uai", "nom"])
+    });
 
     if(req.query.filter) {
       // Field to use in the search
@@ -93,7 +117,6 @@ module.exports = function(app) {
       
       // Sorts the filieres
       lycee.filieres = _.sortBy(lycee.filieres, function(d) { return -1 * d["eff-scolaire-entrants-2011"] });
-       
 
       // Group by niveau
       lycee.filieres = _.groupBy(lycee.filieres, function(d) { return d["niveau"] });
@@ -127,10 +150,8 @@ module.exports = function(app) {
 };
 
 function getLycees() {
-  // Avoids empty data set
-  if(this.lycees && !this.lycees.length) this.lycees = false;
   // Loads the data once
-  this.lycees = this.lycees || distinct( data.lycees, function(d) { return d["uai"] } );  
+  this.lycees = distinct( data.lycees, function(d) { return d["uai"] } );  
   // Remove some useless values
   _.each(this.lycees, function(lycee, key) {
     this.lycees[key] = _.omit(lycee, ["statut", "niveau", "filiere-ppi", "sous-filiere-ppi", "eff-scolaire-entrants-2011"]);
@@ -138,21 +159,17 @@ function getLycees() {
   return this.lycees;
 }
 
-function getFilieres() {  
-  // Avoids empty data set
-  if(this.filieres && !this.filieres.length) this.filieres = false;  
+function getFilieres() {    
   // Loads the data once
-  this.filieres = this.filieres || distinct( data.lycees, function(d) { return d["filiere-ppi"] } );  
+  this.filieres = distinct( data.lycees, function(d) { return d["filiere-ppi"] } );  
   // Sorts the list
   this.filieres = _.sortBy(this.filieres, "filiere-ppi"); 
   return this.filieres;
 }
 
 function getSousFilieres() {
-  // Avoids empty data set
-  if(this.sousFilieres && !this.sousFilieres.length) this.sousFilieres = false;
   // Loads the data once
-  this.sousFilieres = this.sousFilieres || distinct( data.lycees, function(d) { return d["sous-filiere-ppi"] } );
+  this.sousFilieres =  distinct( data.lycees, function(d) { return d["sous-filiere-ppi"] } );
   // Sorts the list
   this.sousFilieres = _.sortBy(this.sousFilieres, "sous-filiere-ppi"); 
   return this.sousFilieres;

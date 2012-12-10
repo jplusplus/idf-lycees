@@ -409,9 +409,8 @@ var a = new (function(window, undefined) {
           latitude : points[i]["latitude"],             
                uai : points[i]["uai"],                        // Unique ID of the lycee
               name : points[i]["nom"],                        // The name of the lycee
-             label : points[i]["libelle-code-nature-uai"],    // Code NAture UAI
-                                                              // The address of the lycee
-              addr : points[i]["adresse"] + "<br />" + points[i]["code-postal"]  + " " + points[i]["libel-commune"], 
+             label : points[i]["libelle-code-nature-uai"],    // Code NAture UAI                                                              
+              addr : points[i]["adresse"] + "<br />" + points[i]["code-postal"]  + " " + points[i]["libel-commune"], // The address of the lycee
             statut : points[i]["statut"],                     // Statut of the (Scolaire or Apprentissage)
           internat : points[i]["presence-internat"] == "oui", // Is there an internat ?
           filieres : [ points[i]["statut"] ]                  // An array of the differents filieres statut
