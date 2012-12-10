@@ -400,9 +400,11 @@ var a = new (function(window, undefined) {
       // Fetch every line 
       for(var i in points) {         
 
+        if(!points[i]["geo"]) continue;
+
         // Embedable data for the marker
         var lycee = {
-               geo : points[i]["geo"].split(" "),             // Position array of the lycee
+               geo : points[i]["geo"].split(" "), // Position array of the lycee
          longitude : points[i]["longitude"],             
           latitude : points[i]["latitude"],             
                uai : points[i]["uai"],                        // Unique ID of the lycee
@@ -862,6 +864,19 @@ var a = new (function(window, undefined) {
     $(window).on("resize", that.cardsHeight);
     // Animate the logo
     setInterval(that.nextLogoFrame, 15*1000);
+
+    if( $("html").hasClass("ie7") || $("html").hasClass("ie8") ) {
+
+      $(".internat").on("click", function() {
+        var checked = $(this).find(":input").prop("checked");
+        
+        $(this)
+          .toggleClass("checked", !checked)
+          .find(":input")
+            .prop("checked", !checked)
+            .trigger("change");
+      });
+    } 
 
   });
 

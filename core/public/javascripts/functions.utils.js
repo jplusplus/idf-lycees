@@ -76,6 +76,8 @@ $.fn.loading = function(state, addClass) {
  */
 function slugify(str) {
 
+  if(typeof str != "string") return "-";
+
   str = str.replace(/^\s+|\s+$/g, ''); // trim
   str = str.toLowerCase();
   
