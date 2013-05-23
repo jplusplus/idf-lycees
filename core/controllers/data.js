@@ -38,6 +38,8 @@ module.exports = function(app) {
   module.exports.plusLycees = require("../data/plus-lycees.json");       
   module.exports.cities     = require("../data/cities.json");       
 
+  // Do not load the google fusion pack
+  return;
   // Create the fusiontable client
   googleapis.load('fusiontables','v1', function(err, c) {
     // No error
