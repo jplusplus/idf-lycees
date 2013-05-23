@@ -38,8 +38,6 @@ module.exports = function(app) {
   module.exports.plusLycees = require("../data/plus-lycees.json");       
   module.exports.cities     = require("../data/cities.json");       
 
-  // Do not load the google fusion pack
-  return;
   // Create the fusiontable client
   googleapis.load('fusiontables','v1', function(err, c) {
     // No error
@@ -55,9 +53,10 @@ module.exports = function(app) {
           lycees: getLycees,
           plusLycees: getPlusLycees
         // Save the dataset as exportable values
-        }, function(err, res) {                  
-          module.exports.lycees  = res.lycees;    
-          module.exports.plusLycees  = res.plusLycees;          
+        }, function(err, res) { 
+          if(err) return;            
+          if(res.lycees.length) module.exports.lycees  = res.lycees;    
+          if(res.plusLycees.length) module.exports.plusLycees  = res.plusLycees;          
         }
       );
     }
