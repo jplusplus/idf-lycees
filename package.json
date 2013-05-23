@@ -12,8 +12,8 @@
     , "underscore"        : "1.4.2"  
   }
   , "engines": {
-      "node": "0.8.7",
-      "npm": "1.1.32"
+      "node": "0.10.5",
+      "npm": "1.2.18"
   }
   , "main": "app.js"
   , "name": "idf-lycees"
