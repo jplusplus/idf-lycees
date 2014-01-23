@@ -34,9 +34,9 @@ module.exports.filieres = module.exports.lycees = [];
  */
 module.exports = function(app) {
 
-  module.exports.lycees     = require("../data/lycees.json");       
-  module.exports.plusLycees = require("../data/plus-lycees.json");       
-  module.exports.cities     = require("../data/cities.json");       
+  module.exports.lycees     = require("../data/lycees.json");
+  module.exports.plusLycees = require("../data/plus-lycees.json");
+  module.exports.cities     = require("../data/cities.json");
 
   // Create the fusiontable client
   googleapis.load('fusiontables','v1', function(err, c) {
@@ -45,7 +45,7 @@ module.exports = function(app) {
       // Record the client
       client = c;
       // Sets API key
-      client.setApiKey('AIzaSyALQzqhaM30UDeVoDQ8ZBAW2LAqVtNQKl8');    
+      client.setApiKey('AIzaSyBstMlh1qxkkJoFJ_-7sJh5H6lGG3t-w3o');
 
       // Get the two dataset
       async.parallel(
@@ -53,27 +53,27 @@ module.exports = function(app) {
           lycees: getLycees,
           plusLycees: getPlusLycees
         // Save the dataset as exportable values
-        }, function(err, res) { 
-          if(err) return;            
-          if(res.lycees.length) module.exports.lycees  = res.lycees;    
-          if(res.plusLycees.length) module.exports.plusLycees  = res.plusLycees;          
+        }, function(err, res) {
+          if(err) return;
+          if(res.lycees.length) module.exports.lycees  = res.lycees;
+          if(res.plusLycees.length) module.exports.plusLycees  = res.plusLycees;
         }
       );
     }
   });
 
 };
- 
+
 /**
  * Get the lycées dataset
- * @param  {Function} callback Callback function 
+ * @param  {Function} callback Callback function
  */
 var getLycees = module.exports.getLycees = function(callback) {
   getTable("1G5tXy-DRGrKgF-nXWEQ_LvxCboI1aLE6w0JuHok", callback);
-}; 
+};
 /**
  * Get the "plus lycées" dataset
- * @param  {Function} callback Callback function 
+ * @param  {Function} callback Callback function
  */
 var getPlusLycees = module.exports.getPlusLycees = function(callback) {
   getTable("1hQJkpIB-nbiKBLTgGkgHwwJH1QGGmG5hTpQzDwE", callback);
@@ -83,7 +83,7 @@ var getPlusLycees = module.exports.getPlusLycees = function(callback) {
 /**
  * Get a table
  * @param  {String} key Fusion table key
- * @param  {Function} callback Callback function 
+ * @param  {Function} callback Callback function
  */
 var getTable = module.exports.getTable = function(key, callback) {
 
@@ -103,15 +103,15 @@ var getTable = module.exports.getTable = function(key, callback) {
     .newBatchRequest()
     .add('fusiontables.query.sql', { sql: query.join("\n") })
     .execute(null, function(err, res, headers) {
-      
+
       // Spread the error
       if(res == null || !res.length || res[0] == null) return callback(err, null);
 
       // For each rows in the given dataset
       for(var index in res[0].rows) {
         // Transforms the array of data into an object according the columns' names
-        res[0].rows[index] = objectify(res[0].rows[index], res[0].columns);        
-      }               
+        res[0].rows[index] = objectify(res[0].rows[index], res[0].columns);
+      }
 
       // Sends the dataset objectified
       return callback(null, res[0].rows);
@@ -127,10 +127,10 @@ var getTable = module.exports.getTable = function(key, callback) {
  * @return {Object}        The array after transformation
  */
 function objectify(row, fields) {
-  
+
   var obj = {};
-  
-  // Fetchs the row 
+
+  // Fetchs the row
   for(var index in row) {
     // Slugify the name
     var slug = slugify(fields[index])
@@ -144,14 +144,14 @@ function objectify(row, fields) {
 /**
  * Slugify the given string
  * @src http://dense13.com/blog/2009/05/03/converting-string-to-slug-javascript/
- * @param  {String} str String to slugify 
+ * @param  {String} str String to slugify
  * @return {String}     String slugified
  */
 function slugify(str) {
 
   str = str.replace(/^\s+|\s+$/g, ''); // trim
   str = str.toLowerCase();
-  
+
   // remove accents, swap ñ for n, etc
   var from = "àáäâèéëêìíïîòóöôùúüûñç·/_,:;";
   var to   = "aaaaeeeeiiiioooouuuunc------";
