@@ -44,40 +44,28 @@ module.exports = function(app) {
   module.exports.plusLycees = require("../data/plus-lycees.json");
   module.exports.cities     = require("../data/cities.json");
 
-  // Create the fusiontable client
-  googleapis.load('fusiontables','v1', function(err, c) {
-    // No error
-    if(err == null) {
-      // Record the client
-      client = c;
-      // Sets API key
-      client.setApiKey('AIzaSyBstMlh1qxkkJoFJ_-7sJh5H6lGG3t-w3o');
-
-      // Get the two dataset
-      async.parallel(
-        {
-          lycees: getLycees,
-          plusLycees: getPlusLycees
-        // Save the dataset as exportable values
-        }, function(err, res) {
-          if(err) return;
-          if(res.lycees.length) {
-            console.log(" ✔ 'Lycees' saved");
-            module.exports.lycees  = res.lycees;
-            var filename = path.join(__dirname, "../data/lycees.json");
-            fs.writeFile(filename, JSON.stringify(res.lycees, null, 4) );
-          }
-          if(res.plusLycees.length) {
-            console.log(" ✔ 'Plus lycees' saved");
-            module.exports.plusLycees  = res.plusLycees;
-            var filename = path.join(__dirname, "../data/plus-lycees.json");
-            fs.writeFile(filename, JSON.stringify(res.plusLycees, null, 4) );
-          }
-        }
-      );
+  // Get the two dataset
+  async.parallel(
+    {
+      lycees: getLycees,
+      plusLycees: getPlusLycees
+    // Save the dataset as exportable values
+    }, function(err, res) {
+      if(err) return;
+      if(res.lycees != null && res.lycees.length) {
+        console.log(" ✔ 'Lycees' saved");
+        module.exports.lycees  = res.lycees;
+        var filename = path.join(__dirname, "../data/lycees.json");
+        fs.writeFile(filename, JSON.stringify(res.lycees, null, 4) );
+      }
+      if(res.plusLycees != null && res.plusLycees.length) {
+        console.log(" ✔ 'Plus lycees' saved");
+        module.exports.plusLycees  = res.plusLycees;
+        var filename = path.join(__dirname, "../data/plus-lycees.json");
+        fs.writeFile(filename, JSON.stringify(res.plusLycees, null, 4) );
+      }
     }
-  });
-
+  );
 };
 
 /**
@@ -107,33 +95,28 @@ var getTable = module.exports.getTable = function(key, callback) {
 
   // Avoid callback fail
   callback = callback || function() {};
+  // Google API key
+  var API_KEY = 'AIzaSyBstMlh1qxkkJoFJ_-7sJh5H6lGG3t-w3o';
+  // Googlefusion client
+  var client = googleapis.fusiontables("v1");
 
-  // Checks the client
-  if(!client) return callback({error: "No client available"}, null);
   var query = [];
   query.push("SELECT * ");
   query.push("FROM " + escape(key));
   query.push("LIMIT 5002 ");
 
   // Creates a batch request
-  client
-    .newBatchRequest()
-    .add('fusiontables.query.sql', { sql: query.join("\n") })
-    .execute(null, function(err, res, headers) {
-
-      // Spread the error
-      if(res == null || !res.length || res[0] == null) return callback(err, null);
-
-      // For each rows in the given dataset
-      for(var index in res[0].rows) {
-        // Transforms the array of data into an object according the columns' names
-        res[0].rows[index] = objectify(res[0].rows[index], res[0].columns);
-      }
-
-      // Sends the dataset objectified
-      return callback(null, res[0].rows);
-
-    });
+  client.query.sql({ auth: API_KEY, sql: query.join("\n") }, function(err, res) {
+    // Spread the error
+    if(res == null || res.rows == null || !res.rows.length) return callback(err, null);
+    // For each rows in the given dataset
+    for(var index in res.rows) {
+      // Transforms the array of data into an object according the columns' names
+      res.rows[index] = objectify(res.rows[index], res.columns);
+    }
+    // Sends the dataset objectified
+    return callback(null, res.rows);
+  });
 
 };
 
