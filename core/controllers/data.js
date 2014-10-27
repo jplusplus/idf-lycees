@@ -44,6 +44,7 @@ module.exports = function(app) {
   module.exports.plusLycees = require("../data/plus-lycees.json");
   module.exports.cities     = require("../data/cities.json");
 
+  return;
   // Get the two dataset
   async.parallel(
     {
