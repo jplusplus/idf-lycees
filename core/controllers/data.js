@@ -17,6 +17,12 @@ var async = require('async');
 var fs = require("fs");
 
 /**
+ * Path interface
+ * @type {Object}
+ */
+var path = require("path");
+
+/**
  * API Client
  * @type {Boolean}
  */
@@ -55,8 +61,18 @@ module.exports = function(app) {
         // Save the dataset as exportable values
         }, function(err, res) {
           if(err) return;
-          if(res.lycees.length) module.exports.lycees  = res.lycees;
-          if(res.plusLycees.length) module.exports.plusLycees  = res.plusLycees;
+          if(res.lycees.length) {
+            console.log(" ✔ 'Lycees' saved");
+            module.exports.lycees  = res.lycees;
+            var filename = path.join(__dirname, "../data/lycees.json");
+            fs.writeFile(filename, JSON.stringify(res.lycees, null, 4) );
+          }
+          if(res.plusLycees.length) {
+            console.log(" ✔ 'Plus lycees' saved");
+            module.exports.plusLycees  = res.plusLycees;
+            var filename = path.join(__dirname, "../data/plus-lycees.json");
+            fs.writeFile(filename, JSON.stringify(res.plusLycees, null, 4) );
+          }
         }
       );
     }
@@ -69,6 +85,7 @@ module.exports = function(app) {
  * @param  {Function} callback Callback function
  */
 var getLycees = module.exports.getLycees = function(callback) {
+  console.log(" ⚫ 'Lycees' loading");
   getTable("1G5tXy-DRGrKgF-nXWEQ_LvxCboI1aLE6w0JuHok", callback);
 };
 /**
@@ -76,6 +93,7 @@ var getLycees = module.exports.getLycees = function(callback) {
  * @param  {Function} callback Callback function
  */
 var getPlusLycees = module.exports.getPlusLycees = function(callback) {
+  console.log(" ⚫ 'Plus lycees' loading");
   getTable("1hQJkpIB-nbiKBLTgGkgHwwJH1QGGmG5hTpQzDwE", callback);
 };
 
@@ -94,8 +112,7 @@ var getTable = module.exports.getTable = function(key, callback) {
   if(!client) return callback({error: "No client available"}, null);
   var query = [];
   query.push("SELECT * ");
-  query.push("FROM " + escape(key))
-  //query.push("WHERE 'Code Nature UAI' NOT EQUAL TO '' ");
+  query.push("FROM " + escape(key));
   query.push("LIMIT 5002 ");
 
   // Creates a batch request
