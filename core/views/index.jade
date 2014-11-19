@@ -2,7 +2,7 @@ extends layout
 
 block title
   = "Les lycées dans votre région"
-  
+
 block stylesheets
   link(href="/stylesheets/vendor/bootstrap/css/bootstrap.min.css", type='text/css', rel="stylesheet")
   link(href="/stylesheets/jscrollpane.css", type='text/css', rel="stylesheet")
@@ -15,7 +15,7 @@ block scripts
   script(src="/javascripts/vendor/bootstrap.min.js", type="text/javascript")
   script(src="/javascripts/vendor/underscore-min.js", type="text/javascript")
   script(src="/javascripts/vendor/jquery.scrollTo-min.js", type="text/javascript")
-  script(src="/javascripts/vendor/jquery.idle-timer.js", type="text/javascript")    
+  script(src="/javascripts/vendor/jquery.idle-timer.js", type="text/javascript")
   script(src="/javascripts/vendor/jade.min.js", type="text/javascript")
   script(src="/javascripts/vendor/jquery.jscrollpane.min.js", type="text/javascript")
   script(src="/javascripts/vendor/jquery.mousewheel.js", type="text/javascript")
@@ -32,11 +32,11 @@ block body
       img(src="/images/tetiere-batiment2.png", class="batiment2")
       img(src="/images/pointeurs.png", class="pointeurs")
       .explore Explorez<br />les filières scolaires<br />et d'apprentissage
-      h2.lycee 
+      h2.lycee
         small Nature du lycée
         .name Nom du lycée
     .slider
-      a.back Retour  
+      a.back Retour
       .wrapper
         .card
           .filters.hidden
@@ -44,21 +44,21 @@ block body
             form.inputs.form-search#lyceeFilter
               label
                 | Vous cherchez un lycée en particulier ?<br />
-                | Localisez-le sur la carte et découvrez son offre de filières.<br />              
+                | Localisez-le sur la carte et découvrez son offre de filières.<br />
                 input(type="text", name="lycee", placeholder="Ex : Albert Camus", autocomplete="off").input-search.right05
               button(type="submit").btn.btn-red Chercher
 
-          
+
           .filters.hidden
             h3.top05 Trouver les lycées près de chez vous
             form.inputs.form-search#placeFilter
               label(for="pl1")
-                | Entrez votre adresse pour trouver les établissements près de chez vous.        
+                | Entrez votre adresse pour trouver les établissements près de chez vous.
 
-              .internat.checkbox.top10           
+              .internat.checkbox.top10
                 input(type="checkbox", name="hasInternat", id="hi1")
                 label(for="hi1") Uniquement avec internat
-              
+
               input(type="text", name="place", id="pl1", placeholder="Ex : 21, rue des Vertus, Paris", autocomplete="off").input-search.right05
               button(type="submit").btn.btn-red Chercher
 
@@ -123,11 +123,11 @@ block body
           .lycee
 
       #menu-footer
-        | Données scolaire : enquêtes élèves 20111 MEN / Rectorat.<br />
-        | Données apprentissage : R IDF. Géocodage 2011 : MEN / DEPP.
+        | Données scolaires : enquêtes élèves 2013 MEN/Rectorat. <br />
+        | Données apprentissage : région IDF. Géocodage 2013 : MEN/DEPP.
 
   .overflow
-    #map      
+    #map
     .js-overlay.js-close-popup.hide
 
     .js-popup-box.hide#noResultAlert
@@ -151,4 +151,4 @@ block body
       a(href="/")
         img(src="/images/btreload.png")
 
-        
+
