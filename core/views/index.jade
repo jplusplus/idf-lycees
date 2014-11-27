@@ -78,8 +78,8 @@ block body
                     .span8
                         select(name="niveau")
                           option(value="")  Choisissez...
-                          option(value="Pré-Bac")  Pré-bac
-                          option(value="Post-Bac") Post-bac
+                          option(value="pré_bac")  Pré-bac
+                          option(value="post_bac") Post-bac
                   .span1.pull-right.reset.hide X
 
                 .row-fluid.hide
@@ -89,7 +89,7 @@ block body
                         select(name="filiere-ppi",disabled=true)
                           option(value="")  Choisissez...
                           each filiere in filieres
-                            if filiere["filiere-ppi"] != ""
+                            if filiere["filiere-ppi"] != "" && filiere["filiere-ppi"] != 0
                               option(value=filiere["filiere-ppi"])=filiere["filiere-ppi"]
                   .span1.pull-right.reset.hide X
 
